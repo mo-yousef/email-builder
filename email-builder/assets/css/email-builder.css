@@ -1,0 +1,231 @@
+/* Email Template Builder - Main Styles */
+body.page-template-page-template-email-builder {
+    /* Potentially override theme body styles for a fuller app experience if needed */
+    /* margin: 0; padding: 0; */
+}
+
+.etb-app-theme-container { /* This class is on the main div in the page template */
+    display: flex;
+    flex-direction: column; /* Stack app and action bar vertically */
+    height: calc(100vh - 100px); /* Adjust 100px based on theme header/admin bar height */
+    min-height: 600px; /* Minimum height for usability */
+    border: 1px solid #ccd0d4;
+    background-color: #f6f7f7;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin: 20px; /* Adjust if theme adds too much padding/margin around page content */
+}
+
+#etb-app-container { /* Inner container for sidebar and preview */
+    display: flex;
+    flex-grow: 1; /* Takes up available space from parent */
+    overflow: hidden; /* Prevent app from causing page scrollbars if possible */
+}
+
+#etb-sidebar-panel {
+    width: 320px;
+    min-width: 280px; /* Prevent from becoming too small */
+    background-color: #ffffff;
+    border-right: 1px solid #ccd0d4;
+    padding: 0; /* Padding will be on inner sections */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Scroll sidebar content if it overflows */
+}
+
+.etb-sidebar-header {
+    padding: 15px;
+    border-bottom: 1px solid #ccd0d4;
+    background-color: #f0f0f1;
+}
+.etb-sidebar-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#etb-template-management-section,
+#etb-current-template-name-section,
+#etb-controls-section {
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+#etb-template-management-section h3,
+#etb-controls-section h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+#etb-template-management-section label,
+#etb-current-template-name-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+#etb-template-management-section select,
+#etb-current-template-name-section input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+.etb-template-buttons button {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+.button.button-danger { /* Custom class for delete button */
+    background-color: #d63638;
+    border-color: #d63638;
+    color: #fff;
+}
+.button.button-danger:hover {
+    background-color: #b02a2c;
+    border-color: #b02a2c;
+}
+
+
+#etb-controls-section {
+    flex-grow: 1; /* Allow this section to take remaining space in sidebar */
+    overflow-y: auto; /* If many controls, make this part scrollable */
+}
+.etb-no-controls-message {
+    color: #555;
+    font-style: italic;
+}
+
+
+#etb-main-preview-area {
+    flex-grow: 1;
+    display: flex; /* Use flex for the tabs component */
+    flex-direction: column; /* Stack tab nav and content */
+    padding: 15px;
+    background-color: #f6f7f7; /* Light background for the preview area */
+}
+
+#etb-preview-tabs {
+    flex-grow: 1; /* Tabs component takes available space */
+    display: flex;
+    flex-direction: column;
+}
+
+/* jQuery UI Tabs Styling */
+#etb-preview-tabs .ui-tabs-nav {
+    padding: 0;
+    margin: 0 0 0px 0; /* Remove bottom margin to connect with panel border */
+    border: none; /* Remove default jQuery UI nav border */
+    background: none; /* Remove default jQuery UI nav background */
+    border-bottom: 1px solid #ccc; /* Add a bottom border to the nav */
+}
+#etb-preview-tabs .ui-tabs-nav li {
+    display: inline-block;
+    list-style: none;
+    margin: 0 2px -1px 0; /* Negative margin to overlap border */
+    padding: 0;
+    border: 1px solid #ccc;
+    border-bottom: none; /* Remove bottom border from li */
+    border-radius: 4px 4px 0 0;
+    background-color: #e0e0e0;
+    position: relative; /* For z-index if needed */
+}
+#etb-preview-tabs .ui-tabs-nav li a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    outline: none;
+}
+#etb-preview-tabs .ui-tabs-nav li.ui-tabs-active {
+    background-color: #fff; /* Active tab matches panel background */
+    border-bottom: 1px solid #fff; /* Hide bottom border by matching color */
+}
+#etb-preview-tabs .ui-tabs-nav li.ui-tabs-active a {
+    color: #0073aa; /* WordPress blue for active tab text */
+}
+
+#etb-preview-tabs .etb-preview-tab-content.ui-tabs-panel {
+    padding: 0; /* Remove padding as iframe takes full space */
+    border: 1px solid #ccc;
+    border-top: none; /* Top border is visually handled by active tab */
+    background-color: #fff;
+    flex-grow: 1; /* Panel takes available vertical space */
+    overflow: hidden; /* Iframe will handle its own scroll */
+    position: relative; /* For iframe absolute positioning if needed */
+}
+
+#etb-preview-tabs iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block; /* Remove any extra space below iframe */
+}
+
+#etb-action-bar {
+    padding: 15px;
+    border-top: 1px solid #ccd0d4;
+    text-align: right;
+    background-color: #ffffff;
+    flex-shrink: 0; /* Prevent action bar from shrinking */
+}
+#etb-action-bar button {
+    margin-left: 10px;
+}
+#etb-action-bar button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+
+/* Sortable items styling (placeholders for now) */
+#etb-sortable-items-container .etb-sortable-section {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fdfdfd;
+    cursor: move;
+    border-radius: 3px;
+}
+#etb-sortable-items-container .etb-sortable-section h5 {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    cursor: grab;
+}
+#etb-sortable-items-container .etb-sortable-section .etb-control-group label {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 12px;
+}
+#etb-sortable-items-container .etb-sortable-section .etb-control-group input[type="text"],
+#etb-sortable-items-container .etb-sortable-section .etb-control-group textarea {
+    width: 100%;
+    padding: 6px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    font-size: 13px;
+}
+#etb-sortable-items-container .etb-sortable-section .etb-control-group textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+
+.etb-sortable-placeholder {
+    border: 2px dashed #0073aa;
+    background-color: #f0f8ff;
+    height: 50px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+}
+
+/* Utility for screen reader text */
+.screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
+}
