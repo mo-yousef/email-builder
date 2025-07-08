@@ -44,34 +44,54 @@ document.addEventListener('alpine:init', () => {
 
         addSection(type) {
             let newSectionContent = {};
-            const defaultContent = { // For text-based properties
-                en: `New ${type} content (EN)`,
-                pt: `Novo conteúdo de ${type} (PT)`,
-                es: `Nuevo contenido de ${type} (ES)`
-            };
+            const defaultMultilingualText = (baseText = `New ${type}`) => ({
+                en: `${baseText} (EN)`,
+                pt: `${baseText} (PT)`,
+                es: `${baseText} (ES)`
+            });
 
             switch (type) {
+                case 'greeting_text': // Specialized
+                    newSectionContent = defaultMultilingualText('Good day {{name}},');
+                    break;
+                case 'main_paragraph': // Specialized
+                    newSectionContent = defaultMultilingualText('This is the main paragraph.');
+                    break;
+                case 'trading_schedule': // Specialized container for new "Holiday Notification" template
+                    newSectionContent = {
+                        date_header_1: defaultMultilingualText('Thursday - MM.DD.YYYY'),
+                        rows_1: [], // Array for the first day's rows
+                        date_header_2: defaultMultilingualText('Friday - MM.DD.YYYY'),
+                        rows_2: []  // Array for the second day's rows
+                    };
+                    break;
+                // Note: 'trading_row_item' is not added directly via addSection, but within a 'trading_schedule'
+                case 'closing_text': // Specialized
+                    newSectionContent = defaultMultilingualText('Regards,\nThe {{company_name}} Team');
+                    break;
+                // Generic types from previous implementation (can be kept or removed if not used by master templates)
                 case 'text':
-                    newSectionContent = { ...defaultContent };
+                    newSectionContent = defaultMultilingualText();
                     break;
                 case 'image':
                     newSectionContent = {
                         url: { en: '', pt: '', es: '' },
-                        alt: { en: '', pt: '', es: '' }
+                        alt: defaultMultilingualText('')
                     };
                     break;
                 case 'button':
                     newSectionContent = {
-                        text: { ...defaultContent },
+                        text: defaultMultilingualText('Button Text'),
                         url: { en: '#', pt: '#', es: '#' },
-                        bgColor: '#007bff' // Default button color
+                        bgColor: '#007bff'
                     };
                     break;
                 case 'divider':
-                    newSectionContent = {}; // No content needed for divider
+                    newSectionContent = {}; // No content needed
                     break;
                 default:
-                    newSectionContent = { ...defaultContent };
+                    console.warn(`Attempting to add unknown section type: ${type}`);
+                    return; // Don't add unknown types
             }
 
             const newSection = {
@@ -81,6 +101,24 @@ document.addEventListener('alpine:init', () => {
             };
             this.template.sections.push(newSection);
         },
+
+        // Methods for managing trading_row_items within a trading_schedule section
+        addTradingRow(scheduleSectionIndex, dayKey) { // dayKey would be 'rows_1' or 'rows_2'
+            if (this.template.sections[scheduleSectionIndex] && this.template.sections[scheduleSectionIndex].type === 'trading_schedule') {
+                const newRow = {
+                    id: 'trading_row_' + Date.now() + Math.random().toString(36).substring(2,7), // Unique ID for the row
+                    instrument: { en: 'INSTRUMENT', pt: 'INSTRUMENTO', es: 'INSTRUMENTO' },
+                    time_status: { en: 'Market Hours', pt: 'Horário de Mercado', es: 'Horario de Mercado' }
+                };
+                this.template.sections[scheduleSectionIndex].content[dayKey].push(newRow);
+            }
+        },
+        removeTradingRow(scheduleSectionIndex, dayKey, rowIndex) {
+            if (this.template.sections[scheduleSectionIndex] && this.template.sections[scheduleSectionIndex].content[dayKey]) {
+                this.template.sections[scheduleSectionIndex].content[dayKey].splice(rowIndex, 1);
+            }
+        },
+
 
         removeSection(index) {
             if (confirm('Are you sure you want to remove this section?')) {
@@ -109,10 +147,14 @@ document.addEventListener('alpine:init', () => {
 
         getSectionTypeTitle(type) {
             switch (type) {
-                case 'text': return 'Text';
-                case 'image': return 'Image';
-                case 'button': return 'Button';
+                case 'text': return 'Text Block';
+                case 'image': return 'Image Block';
+                case 'button': return 'Button Block';
                 case 'divider': return 'Divider';
+                case 'greeting_text': return 'Greeting Text';
+                case 'main_paragraph': return 'Main Paragraph';
+                case 'trading_schedule': return 'Trading Schedule';
+                case 'closing_text': return 'Closing Text';
                 default: return 'Section';
             }
         },
@@ -123,6 +165,10 @@ document.addEventListener('alpine:init', () => {
                 case 'image': return 'dashicons dashicons-format-image';
                 case 'button': return 'dashicons dashicons-button';
                 case 'divider': return 'dashicons dashicons-minus';
+                case 'greeting_text': return 'dashicons dashicons-testimonial'; // Example icon
+                case 'main_paragraph': return 'dashicons dashicons-editor-alignleft'; // Example icon
+                case 'trading_schedule': return 'dashicons dashicons-calendar-alt'; // Example icon
+                case 'closing_text': return 'dashicons dashicons-edit-page'; // Example icon
                 default: return 'dashicons dashicons-admin-generic';
             }
         },
@@ -152,32 +198,30 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        renderSectionPreview(section) {
-            let html = '';
-            const sContent = section.content || {}; // Ensure content object exists
+        /**
+         * Renders the HTML content snippet for a given section for the live preview.
+         * This function is now geared towards returning minimal HTML for injection into a master layout.
+         */
+        renderSectionContentPreview(section) {
+            let contentHtml = '';
+            const sContent = section.content || {};
             const currentLang = this.currentLang;
             const defaultLang = 'en';
 
-            // Helper to get localized content, falling back to defaultLang
-            const getLocalized = (obj, key) => {
-                if (obj && typeof obj === 'object' && obj[key] && typeof obj[key] === 'object') {
-                    return obj[key][currentLang] || obj[key][defaultLang] || '';
-                } else if (obj && typeof obj === 'object' && obj[currentLang]) { // For direct text content like in old text sections
-                     return obj[currentLang] || obj[defaultLang] || '';
+            const getLocalized = (fieldData, fieldKey) => { // fieldKey is 'text', 'url', 'alt' etc.
+                if (fieldData && typeof fieldData === 'object') {
+                    return fieldData[currentLang] || fieldData[defaultLang] || '';
                 }
-                return obj || ''; // Fallback for non-localized or simple string content
+                return fieldData || ''; // For non-multilingual or direct values like bgColor
             };
 
-            // Helper to process snippets and variables for a given text string
-            const processText = (text) => {
+            const processText = (text) => { // Same as before
                 if (typeof text !== 'string') text = '';
-                // Snippets
                 text = text.replace(/\{\{snippet:([a-zA-Z0-9_]+)\}\}/g, (match, snippetKey) => {
                     return (etb_data.translatable_snippets_full && etb_data.translatable_snippets_full[snippetKey] && etb_data.translatable_snippets_full[snippetKey][currentLang])
                            ? etb_data.translatable_snippets_full[snippetKey][currentLang]
                            : match;
                 });
-                // Variables
                 text = text.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (match) => {
                     const DUMMY_TEXT_COLOR = '#888';
                     return `<span style="color: ${DUMMY_TEXT_COLOR}; font-family: monospace; background-color: #f0f0f0; padding: 1px 3px; border-radius: 3px;">${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`;
@@ -185,40 +229,65 @@ document.addEventListener('alpine:init', () => {
                 return text;
             };
 
-            const outerTableStyle = "border-bottom: 1px dashed #eee;"; // Mimics PHP export style for consistency
-            const textCellStyle = "padding: 10px; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333;";
-
-
             switch (section.type) {
+                case 'greeting_text':
+                case 'main_paragraph':
+                case 'closing_text':
+                    // These sections output processed text that will be wrapped by <p> or other tags in the master HTML.
+                    // The master HTML structure for these placeholders should be simple, e.g., inside a <td> or <p>.
+                    // We directly return the processed text, and nl2br will be applied if it's inside a <p> in the master.
+                    contentHtml = processText(getLocalized(sContent, currentLang)).replace(/\n/g, '<br>\n');
+                    break;
+                // trading_schedule itself doesn't render directly, its sub-parts do.
+                // trading_row_item is rendered by fullPreviewHTML when iterating rows.
+                // Generic types (if kept for other templates or direct use):
                 case 'text':
-                    const text = processText(getLocalized(sContent, currentLang)); // sContent itself is the multilingual object for text
-                    html = `<table width="100%" border="0" cellpadding="0" cellspacing="0" style="${outerTableStyle}"><tr><td style="${textCellStyle}">${text.replace(/\n/g, '<br>\n')}</td></tr></table>`;
+                    contentHtml = processText(getLocalized(sContent, currentLang)).replace(/\n/g, '<br>\n');
+                    // This would be injected into a simple <td> in a generic block wrapper if used.
                     break;
                 case 'image':
-                    const imageUrl = getLocalized(sContent.url, currentLang); // sContent.url is the multilingual object
-                    const altText = processText(getLocalized(sContent.alt, currentLang)); // sContent.alt is multilingual
+                    const imageUrl = getLocalized(sContent.url, currentLang);
+                    const altText = processText(getLocalized(sContent.alt, currentLang));
                     if (imageUrl) {
-                        html = `<table width="100%" border="0" cellpadding="0" cellspacing="0" style="${outerTableStyle}"><tr><td align="center" style="padding:10px;"><img src="${imageUrl}" alt="${altText}" style="display:block; max-width:100%; height:auto; border:0;" /></td></tr></table>`;
+                        contentHtml = `<img src="${imageUrl}" alt="${altText}" style="display:block; max-width:100%; height:auto; border:0;" />`;
                     } else {
-                        html = `<table width="100%" border="0" cellpadding="0" cellspacing="0" style="${outerTableStyle}"><tr><td style="${textCellStyle} text-align:center; color:#aaa;">[Image: No URL provided]</td></tr></table>`;
+                        contentHtml = `[Image: No URL provided]`;
                     }
                     break;
                 case 'button':
                     const buttonText = processText(getLocalized(sContent.text, currentLang));
                     const buttonUrl = getLocalized(sContent.url, currentLang) || '#';
                     const bgColor = sContent.bgColor || '#007bff';
+                    // This generates the button HTML, assuming it's placed within a centered td in the master structure for generic buttons.
                     const buttonTdStyle = `background-color:${bgColor}; border-radius:5px; padding:10px 20px; text-align:center;`;
                     const buttonLinkStyle = "font-family: Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; display:inline-block;";
-                    html = `<table width="100%" border="0" cellpadding="0" cellspacing="0" style="${outerTableStyle} text-align:center;"><tr><td align="center" style="padding:10px;"><table border="0" cellpadding="0" cellspacing="0"><tr><td style="${buttonTdStyle}"><a href="${buttonUrl}" target="_blank" style="${buttonLinkStyle}">${buttonText}</a></td></tr></table></td></tr></table>`;
+                    contentHtml = `<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;"><tr><td style="${buttonTdStyle}"><a href="${buttonUrl}" target="_blank" style="${buttonLinkStyle}">${buttonText}</a></td></tr></table>`;
                     break;
                 case 'divider':
-                    const dividerStyle = "border-top:1px solid #dddddd; height:1px; margin:10px 0;";
-                    html = `<table width="100%" border="0" cellpadding="0" cellspacing="0" style="${outerTableStyle}"><tr><td style="padding:10px;"><div style="${dividerStyle}"></div></td></tr></table>`;
+                    contentHtml = '<div style="border-top:1px solid #dddddd; height:1px; margin:10px 0;"></div>';
                     break;
-                default:
-                    html = `<table width="100%" border="0" cellpadding="0" cellspacing="0" style="${outerTableStyle}"><tr><td style="${textCellStyle} color:red;">Unsupported section type: ${section.type}</td></tr></table>`;
+                // No default needed as fullPreviewHTML will decide what to do with sections.
             }
-            return html;
+            return contentHtml;
+        },
+
+        /**
+         * Renders a single trading row item into its HTML string (<tr>...</tr>).
+         */
+        renderTradingRowItemPreview(item, lang) {
+            // Simplified processText for this specific context
+            const processSimpleText = (text) => {
+                 if (typeof text !== 'string') text = '';
+                // Variables only for preview simplicity, snippets might be too complex here
+                return text.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (match) => {
+                    const DUMMY_TEXT_COLOR = '#888';
+                    return `<span style="color: ${DUMMY_TEXT_COLOR}; font-family: monospace; background-color: #f0f0f0; padding: 1px 3px; border-radius: 3px;">${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`;
+                });
+            };
+            const instrument = processSimpleText(item.instrument[lang] || item.instrument['en'] || '');
+            const time_status = processSimpleText(item.time_status[lang] || item.time_status['en'] || '');
+            // This structure must match the one in holiday-notification-master.html.php's trading rows
+            return `<tr><td width="50%" style="vertical-align: top; padding: 10px; word-break: break-word; font-family: 'Montserrat', sans-serif; font-weight: 500; color: #475467; font-size: 14px;"><strong>${instrument}</strong></td><td width="50%" style="vertical-align: top; padding: 10px; word-break: break-word; font-family: 'Montserrat', sans-serif; font-weight: 500; color: #475467; font-size: 14px;">${time_status}</td></tr>`;
         },
 
         copyToClipboard(text) {
@@ -247,32 +316,134 @@ document.addEventListener('alpine:init', () => {
 
         // This computed property will generate the full HTML for the preview iframe
         get fullPreviewHTML() {
-            let bodyContent = this.template.sections.map(section => this.renderSectionPreview(section)).join('');
-            if (this.template.sections.length === 0) {
-                bodyContent = '<p style="text-align:center; color:#888; padding-top: 50px;">Preview will appear here as you add sections.</p>';
-            }
-
-            return `
+            // IMPORTANT: This masterLayoutTemplateJS needs to be a JS string version of the holiday-notification-master.html.php
+            // For brevity here, I'm using a very simplified version. In reality, this would be large.
+            // It must contain the exact same <!-- ETB_... --> placeholders.
+            let masterLayoutTemplateJS = `
                 <!DOCTYPE html>
                 <html lang="${this.currentLang}">
                 <head>
                     <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Email Preview</title>
+                    <title><!-- ETB_TEMPLATE_TITLE --></title>
                     <style>
-                        body { margin: 0; padding: 0; background-color: #f7f7f7; font-family: Arial, sans-serif; }
-                        .email-container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #ddd; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
-                        /* Add more global email styles here if needed */
+                        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f0f0f0; }
+                        .email-content-wrapper { background-color: #ffffff; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #ddd;}
+                        .placeholder-style { padding: 10px; margin-bottom:10px; border: 1px dashed #ccc; background: #f9f9f9;}
+                        .trading-row td { padding: 5px; border-bottom: 1px solid #eee; }
                     </style>
                 </head>
                 <body>
-                    <div class="email-container">
-                        ${bodyContent}
+                    <div class="email-content-wrapper">
+                        <div class="placeholder-style"><!-- ETB_GREETING_TEXT_START -->Default Greeting Preview<!-- ETB_GREETING_TEXT_END --></div>
+                        <div class="placeholder-style"><!-- ETB_MAIN_PARAGRAPH_START -->Default Main Paragraph Preview<!-- ETB_MAIN_PARAGRAPH_END --></div>
+
+                        <div class="placeholder-style">
+                           <h3><!-- ETB_SCHEDULE_DATE_HEADER_1_START -->Thursday Schedule Header Preview<!-- ETB_SCHEDULE_DATE_HEADER_1_END --></h3>
+                           <table><tbody id="etb-rows-day1-preview"><!-- ETB_TRADING_ROWS_THURSDAY_START --><!-- ETB_TRADING_ROWS_THURSDAY_END --></tbody></table>
+                        </div>
+                        <div class="placeholder-style">
+                           <h3><!-- ETB_SCHEDULE_DATE_HEADER_2_START -->Friday Schedule Header Preview<!-- ETB_SCHEDULE_DATE_HEADER_2_END --></h3>
+                           <table><tbody id="etb-rows-day2-preview"><!-- ETB_TRADING_ROWS_FRIDAY_START --><!-- ETB_TRADING_ROWS_FRIDAY_END --></tbody></table>
+                        </div>
+
+                        <div class="placeholder-style"><!-- ETB_CLOSING_TEXT_START -->Default Closing Preview<!-- ETB_CLOSING_TEXT_END --></div>
+                        <div class="placeholder-style"><!-- ETB_FOOTER_CONTENT_START -->Static Footer Preview (not editable via current sections)<!-- ETB_FOOTER_CONTENT_END --></div>
                     </div>
                 </body>
                 </html>
             `;
+
+            let finalHtml = masterLayoutTemplateJS;
+            finalHtml = finalHtml.replace('<!-- ETB_TEMPLATE_TITLE -->', this.template.title ? this.escapeHtml(this.template.title) : 'Email Preview');
+
+            const getLocalized = (fieldData, langKey = this.currentLang) => {
+                 if (fieldData && typeof fieldData === 'object') {
+                    return fieldData[langKey] || fieldData['en'] || '';
+                }
+                return fieldData || '';
+            };
+            const processTextForPreview = (text) => { // Simplified for preview, full processing in PHP export
+                if (typeof text !== 'string') return '';
+                return text.replace(/\{\{snippet:([a-zA-Z0-9_]+)\}\}/g, (match, snippetKey) => {
+                    return (etb_data.translatable_snippets_full && etb_data.translatable_snippets_full[snippetKey] && etb_data.translatable_snippets_full[snippetKey][this.currentLang])
+                           ? `<em>${etb_data.translatable_snippets_full[snippetKey][this.currentLang]}</em>` // Show snippet resolved
+                           : match;
+                }).replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (match) => {
+                    return `<span style="color: #888; font-family: monospace; background-color: #f0f0f0; padding: 1px 3px; border-radius: 3px;">${this.escapeHtml(match)}</span>`;
+                }).replace(/\n/g, '<br>\n');
+            };
+
+            this.template.sections.forEach(section => {
+                let contentToInject = '';
+                switch (section.type) {
+                    case 'greeting_text':
+                        contentToInject = processTextForPreview(getLocalized(section.content));
+                        finalHtml = this.replacePlaceholderBlock(finalHtml, 'ETB_GREETING_TEXT', contentToInject);
+                        break;
+                    case 'main_paragraph':
+                        contentToInject = processTextForPreview(getLocalized(section.content));
+                        finalHtml = this.replacePlaceholderBlock(finalHtml, 'ETB_MAIN_PARAGRAPH', contentToInject);
+                        break;
+                    case 'closing_text':
+                        contentToInject = processTextForPreview(getLocalized(section.content));
+                        finalHtml = this.replacePlaceholderBlock(finalHtml, 'ETB_CLOSING_TEXT', contentToInject);
+                        break;
+                    case 'trading_schedule':
+                        const header1 = processTextForPreview(getLocalized(section.content.date_header_1));
+                        finalHtml = this.replacePlaceholderBlock(finalHtml, 'ETB_SCHEDULE_DATE_HEADER_1', header1);
+
+                        let rows1Html = '';
+                        (section.content.rows_1 || []).forEach(row => {
+                            rows1Html += this.renderTradingRowItemPreview(row, this.currentLang);
+                        });
+                        finalHtml = this.replacePlaceholderBlock(finalHtml, 'ETB_TRADING_ROWS_THURSDAY', rows1Html);
+
+                        const header2 = processTextForPreview(getLocalized(section.content.date_header_2));
+                        finalHtml = this.replacePlaceholderBlock(finalHtml, 'ETB_SCHEDULE_DATE_HEADER_2', header2);
+
+                        let rows2Html = '';
+                        (section.content.rows_2 || []).forEach(row => {
+                            rows2Html += this.renderTradingRowItemPreview(row, this.currentLang);
+                        });
+                        finalHtml = this.replacePlaceholderBlock(finalHtml, 'ETB_TRADING_ROWS_FRIDAY', rows2Html);
+                        break;
+                    // Generic sections might not be used with this master template, or would need different placeholders
+                }
+            });
+
+            // Clean up any placeholders that didn't get content
+            finalHtml = finalHtml.replace(/<!-- ETB_([A-Z0-9_]+)_START -->.*?<!-- ETB_\1_END -->/gs, '<!-- Placeholder \1 not filled -->');
+            finalHtml = finalHtml.replace(/<!-- ETB_([A-Z0-9_]+) -->/g, '<!-- Placeholder \1 not filled -->');
+
+
+            return finalHtml;
         },
+
+        // Helper to escape HTML for display in preview (e.g. for variable placeholders)
+        escapeHtml(text) {
+            if (typeof text !== 'string') return '';
+            return text.replace(/[&<>"']/g, function (match) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[match];
+            });
+        },
+
+        // Helper for replacing placeholder blocks
+        replacePlaceholderBlock(masterHtml, placeholderBaseName, content) {
+            const startTag = `<!-- ${placeholderBaseName}_START -->`;
+            const endTag = `<!-- ${placeholderBaseName}_END -->`;
+            const regex = new RegExp(this.escapeRegExp(startTag) + '([\\s\\S]*?)' + this.escapeRegExp(endTag), 'g');
+            return masterHtml.replace(regex, content ? (startTag + content + endTag) : `<!-- ${placeholderBaseName} is empty -->`);
+        },
+        escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+        },
+
 
         updatePreviewIframe() {
             const iframe = this.$refs.previewIframe;

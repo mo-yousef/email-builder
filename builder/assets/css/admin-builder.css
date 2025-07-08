@@ -215,3 +215,63 @@ hr {
     border-top: 1px solid #ddd;
     margin: 20px 0;
 }
+
+/* Styles for Trading Schedule Section */
+.etb-section-type-trading_schedule .etb-section-content h4 {
+    font-size: 1.1em;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #1d2327;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+.etb-section-type-trading_schedule .etb-section-content h4:first-of-type {
+    margin-top: 0;
+}
+.etb-section-type-trading_schedule .etb-section-content h5 {
+    font-size: 0.95em;
+    margin-top: 10px;
+    margin-bottom: 8px;
+    color: #3c434a;
+}
+
+.etb-trading-rows-group {
+    padding-left: 15px;
+    border-left: 3px solid #e0e0e0;
+    margin-bottom: 15px;
+}
+
+.etb-trading-row-item {
+    padding: 10px;
+    background-color: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+.etb-trading-row-item label {
+    font-size: 12px !important; /* Smaller labels for sub-items */
+}
+.etb-trading-row-item input[type="text"] {
+    margin-bottom: 8px !important; /* Tighter spacing in rows */
+}
+.etb-trading-row-item .button.button-link-delete {
+    color: #d63638 !important;
+    text-decoration: none !important;
+    float: right;
+    padding: 0 !important;
+    margin-top: 5px;
+    font-size: 12px;
+}
+.etb-trading-row-item .button.button-link-delete:hover {
+    color: #a02426 !important;
+}
+.etb-trading-rows-group > .button { /* Add Row button */
+    margin-top: 5px;
+}
+
+.etb-section-content p.description {
+    font-size: 12px;
+    color: #787c82;
+    margin-top: -8px;
+    margin-bottom: 10px;
+}
