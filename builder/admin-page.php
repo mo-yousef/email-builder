@@ -272,6 +272,70 @@ function etb_render_builder_page() {
                                 <!-- Divider Section (No editable content) -->
                                 <div x-show="section.type === 'divider'">
                                     <p style="text-align:center; color:#777; font-style:italic;"><?php esc_html_e('Visual Divider', 'email-template-builder'); ?></p>
+                                </div>
+
+                                <!-- Greeting Text Section -->
+                                <div x-show="section.type === 'greeting_text'">
+                                    <label :for="'greeting-' + section.id + '-' + currentLang"><?php esc_html_e('Greeting Text:', 'email-template-builder'); ?> (<span x-text="currentLang.toUpperCase()"></span>)</label>
+                                    <input type="text" :id="'greeting-' + section.id + '-' + currentLang" x-model="section.content[currentLang]" @focus="setActiveTextarea($event.target)" style="width:100%;">
+                                    <p class="description"><small><?php esc_html_e('Example: Good day {{name}},', 'email-template-builder'); ?></small></p>
+                                </div>
+
+                                <!-- Main Paragraph Section -->
+                                <div x-show="section.type === 'main_paragraph'">
+                                    <label :for="'main-para-' + section.id + '-' + currentLang"><?php esc_html_e('Main Paragraph:', 'email-template-builder'); ?> (<span x-text="currentLang.toUpperCase()"></span>)</label>
+                                    <textarea :id="'main-para-' + section.id + '-' + currentLang" x-model="section.content[currentLang]" @focus="setActiveTextarea($event.target)" style="width: 100%; min-height: 120px;"></textarea>
+                                </div>
+
+                                <!-- Trading Schedule Section -->
+                                <div x-show="section.type === 'trading_schedule'">
+                                    <h4><?php esc_html_e('First Schedule Group', 'email-template-builder'); ?></h4>
+                                    <label :for="'schedule-header1-' + section.id + '-' + currentLang"><?php esc_html_e('Date Header 1:', 'email-template-builder'); ?> (<span x-text="currentLang.toUpperCase()"></span>)</label>
+                                    <input type="text" :id="'schedule-header1-' + section.id + '-' + currentLang" x-model="section.content.date_header_1[currentLang]" @focus="setActiveTextarea($event.target)" style="width:100%;">
+
+                                    <h5><?php esc_html_e('Trading Rows (Day 1):', 'email-template-builder'); ?></h5>
+                                    <div class="etb-trading-rows-group">
+                                        <template x-for="(row, rowIndex) in section.content.rows_1" :key="row.id">
+                                            <div class="etb-trading-row-item">
+                                                <label :for="'item-instrument-' + row.id + '-' + currentLang"><?php esc_html_e('Instrument:', 'email-template-builder'); ?> (<span x-text="currentLang.toUpperCase()"></span>)</label>
+                                                <input type="text" :id="'item-instrument-' + row.id + '-' + currentLang" x-model="row.instrument[currentLang]" @focus="setActiveTextarea($event.target)">
+
+                                                <label :for="'item-status-' + row.id + '-' + currentLang"><?php esc_html_e('Time/Status:', 'email-template-builder'); ?> (<span x-text="currentLang.toUpperCase()"></span>)</label>
+                                                <input type="text" :id="'item-status-' + row.id + '-' + currentLang" x-model="row.time_status[currentLang]" @focus="setActiveTextarea($event.target)">
+
+                                                <button class="button button-link-delete" @click="removeTradingRow(index, 'rows_1', rowIndex)"><?php esc_html_e('Remove Row', 'email-template-builder'); ?></button>
+                                            </div>
+                                        </template>
+                                        <button class="button" @click="addTradingRow(index, 'rows_1')"><?php esc_html_e('Add Row to Day 1', 'email-template-builder'); ?></button>
+                                    </div>
+                                    <hr style="margin: 15px 0;">
+                                    <h4><?php esc_html_e('Second Schedule Group', 'email-template-builder'); ?></h4>
+                                    <label :for="'schedule-header2-' + section.id + '-' + currentLang"><?php esc_html_e('Date Header 2:', 'email-template-builder'); ?> (<span x-text="currentLang.toUpperCase()"></span>)</label>
+                                    <input type="text" :id="'schedule-header2-' + section.id + '-' + currentLang" x-model="section.content.date_header_2[currentLang]" @focus="setActiveTextarea($event.target)" style="width:100%;">
+
+                                    <h5><?php esc_html_e('Trading Rows (Day 2):', 'email-template-builder'); ?></h5>
+                                    <div class="etb-trading-rows-group">
+                                        <template x-for="(row, rowIndex) in section.content.rows_2" :key="row.id">
+                                            <div class="etb-trading-row-item">
+                                                <label :for="'item-instrument-d2-' + row.id + '-' + currentLang"><?php esc_html_e('Instrument:', 'email-template-builder'); ?> (<span x-text="currentLang.toUpperCase()"></span>)</label>
+                                                <input type="text" :id="'item-instrument-d2-' + row.id + '-' + currentLang" x-model="row.instrument[currentLang]" @focus="setActiveTextarea($event.target)">
+
+                                                <label :for="'item-status-d2-' + row.id + '-' + currentLang"><?php esc_html_e('Time/Status:', 'email-template-builder'); ?> (<span x-text="currentLang.toUpperCase()"></span>)</label>
+                                                <input type="text" :id="'item-status-d2-' + row.id + '-' + currentLang" x-model="row.time_status[currentLang]" @focus="setActiveTextarea($event.target)">
+
+                                                <button class="button button-link-delete" @click="removeTradingRow(index, 'rows_2', rowIndex)"><?php esc_html_e('Remove Row', 'email-template-builder'); ?></button>
+                                            </div>
+                                        </template>
+                                        <button class="button" @click="addTradingRow(index, 'rows_2')"><?php esc_html_e('Add Row to Day 2', 'email-template-builder'); ?></button>
+                                    </div>
+                                </div>
+
+                                <!-- Closing Text Section -->
+                                <div x-show="section.type === 'closing_text'">
+                                    <label :for="'closing-' + section.id + '-' + currentLang"><?php esc_html_e('Closing Text:', 'email-template-builder'); ?> (<span x-text="currentLang.toUpperCase()"></span>)</label>
+                                    <textarea :id="'closing-' + section.id + '-' + currentLang" x-model="section.content[currentLang]" @focus="setActiveTextarea($event.target)" style="width: 100%; min-height: 80px;"></textarea>
+                                </div>
+
                             </div>
                         </div>
                     </template>
