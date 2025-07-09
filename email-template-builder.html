@@ -1,1511 +1,2315 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>4XC Email Template Builder</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.min.css"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #f8fafc;
+        min-height: 100vh;
+        color: #1e293b;
+        line-height: 1.6;
+      }
 
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 24px;
+        display: flex;
+        gap: 24px;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 600px;
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+          0 1px 2px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+        height: fit-content;
+        position: sticky;
+        top: 24px;
+        max-height: calc(100vh - 48px);
+        overflow-y: auto;
+      }
+
+      .sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .sidebar::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+
+      .sidebar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 2px;
+      }
+
+      .sidebar h2 {
+        color: #0f172a;
+        margin-bottom: 24px;
+        font-size: 1.5rem;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .control-group {
+        margin-bottom: 24px;
+        padding: 20px;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .control-group h3 {
+        color: #0f172a;
+        margin-bottom: 16px;
+        font-size: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .control-group h3::before {
+        content: "";
+        width: 4px;
+        height: 16px;
+        background: #3b82f6;
+        border-radius: 2px;
+      }
+
+      .control-item {
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .control-item label {
+        flex: 1;
+        font-weight: 500;
+        color: #374151;
+        font-size: 0.875rem;
+      }
+
+      .control-item input[type="text"],
+      .control-item input[type="date"],
+      .control-item textarea,
+      .control-item select {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        background: white;
+      }
+
+      .control-item input[type="text"]:focus,
+      .control-item input[type="date"]:focus,
+      .control-item textarea:focus,
+      .control-item select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+      }
+
+      .control-item textarea {
+        resize: vertical;
+        min-height: 60px;
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 44px;
+        height: 24px;
+        background: #e5e7eb;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .toggle-switch.active {
+        background: #3b82f6;
+      }
+
+      .toggle-switch::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.2s ease;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+      }
+
+      .toggle-switch.active::after {
+        transform: translateX(20px);
+      }
+
+      .trading-schedule {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .schedule-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .schedule-header h4 {
+        margin: 0;
+        color: #374151;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .remove-schedule-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s ease;
+      }
+
+      .remove-schedule-btn:hover {
+        background: #dc2626;
+      }
+
+      .schedule-day-input {
+        width: 100px;
+        padding: 4px 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-right: 8px;
+      }
+
+      .schedule-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        padding: 8px;
+        background: #f9fafb;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .schedule-item input {
+        padding: 6px 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 12px;
+        flex: 1;
+      }
+
+      .schedule-item select {
+        padding: 6px 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 12px;
+        width: 120px;
+      }
+
+      .schedule-item .time-input {
+        width: 80px;
+      }
+
+      .main-content {
+        flex: 1;
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+          0 1px 2px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+      }
+
+      .preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .preview-header h2 {
+        color: #0f172a;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .language-tabs {
+        display: flex;
+        gap: 4px;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .language-tab {
+        padding: 8px 16px;
+        border: none;
+        background: transparent;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: #64748b;
+        font-size: 0.875rem;
+      }
+
+      .language-tab.active {
+        background: #3b82f6;
+        color: white;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      }
+
+      .language-tab:hover:not(.active) {
+        background: #e2e8f0;
+        color: #374151;
+      }
+
+      .preview-area {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 24px;
+        background: #fafafa;
+        min-height: 700px;
+        /* position: relative; */
+        overflow: auto;
+      }
+
+      .template-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .template-content.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .sortable-block {
+        margin-bottom: 12px;
+        padding: 8px;
+        border: 2px dashed #e2e8f0;
+        border-radius: 6px;
+        cursor: move;
+        transition: all 0.2s ease;
+        background: white;
+      }
+
+      .sortable-block:hover {
+        border-color: #3b82f6;
+        border-style: solid;
+        box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.05);
+      }
+
+      .sortable-block.ui-sortable-helper {
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        border-color: #3b82f6;
+        border-style: solid;
+      }
+
+      .sortable-placeholder {
+        background: #dbeafe;
+        border: 2px dashed #3b82f6;
+        border-radius: 6px;
+        height: 60px;
+        margin-bottom: 12px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 24px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 0.875rem;
+        min-height: 40px;
+      }
+
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+
+      .btn-secondary {
+        background: #f8fafc;
+        color: #374151;
+        border: 1px solid #d1d5db;
+      }
+
+      .btn-secondary:hover {
+        background: #f1f5f9;
+        border-color: #9ca3af;
+      }
+
+      .btn-danger {
+        background: #ef4444;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+
+      .add-row-btn {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        margin-top: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .add-row-btn:hover {
+        background: #059669;
+      }
+
+      .remove-row-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 11px;
+        margin-left: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .remove-row-btn:hover {
+        background: #dc2626;
+      }
+
+      .success-message {
+        background: #ecfdf5;
+        color: #065f46;
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 16px;
+        border: 1px solid #bbf7d0;
+        font-size: 0.875rem;
+        position: fixed;
+        top: 20px;
+        right: 30px;
+        z-index: 99999999999999;
+      }
+
+      .drag-handle {
+        cursor: grab;
+        color: #9ca3af;
+        margin-right: 8px;
+      }
+
+      .drag-handle:active {
+        cursor: grabbing;
+      }
+
+      .schedule-row-sortable {
+        padding: 8px;
+        margin-bottom: 4px;
+        border-radius: 4px;
+        cursor: move;
+        transition: all 0.2s ease;
+        border: 1px solid #e5e7eb;
+      }
+
+      .schedule-row-sortable:hover {
+        background: #f9fafb;
+        border-color: #3b82f6;
+      }
+
+      .schedule-row-sortable.ui-sortable-helper {
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+
+      /* Original Email Template Styles */
+      .email-template {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        font-family: "Montserrat", "Trebuchet MS", "Lucida Grande",
+          "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif;
+      }
+
+      .email-header {
+        background: #ececec;
+        text-align: center;
+        padding: 30px;
+      }
+
+      .email-logo {
+        max-width: 100px;
+        height: auto;
+      }
+
+      .email-hero {
+        background: white;
+        text-align: center;
+        padding: 0;
+      }
+
+      .email-hero img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .email-body {
+        background: white;
+        padding: 60px 40px;
+      }
+
+      .email-body p {
+        color: #475467;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.8;
+        margin-bottom: 16px;
+      }
+
+      .schedule-section {
+        background: #f9f9f9;
+        padding: 60px 40px 40px;
+        text-align: center;
+      }
+
+      .schedule-title {
+        color: #101112;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 30px;
+      }
+
+      .schedule-table {
+        background: white;
+        border: 1px solid #d0d5dd;
+        border-radius: 10px;
+        margin: 20px auto;
+        overflow: hidden;
+        max-width: 500px;
+      }
+
+      .schedule-date {
+        background: #efefef;
+        padding: 15px;
+        font-weight: 700;
+        color: #000;
+        text-align: center;
+        border-bottom: 1px solid #d0d5dd;
+      }
+
+      .schedule-row {
+        display: flex;
+        padding: 10px 25px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .schedule-row:last-child {
+        border-bottom: none;
+      }
+
+      .schedule-row:nth-child(even) {
+        background: #ffffff;
+      }
+
+      .schedule-row:nth-child(odd) {
+        background: #f9f9f9;
+      }
+
+      .schedule-instrument {
+        flex: 1;
+        text-align: left;
+        font-weight: 500;
+        color: #475467;
+      }
+
+      .schedule-time {
+        flex: 1;
+        text-align: left;
+        color: #475467;
+      }
+
+      .email-footer {
+        background: white;
+        padding: 60px 40px;
+        text-align: left;
+      }
+
+      .email-footer p {
+        color: #475467;
+        font-size: 16px;
+        line-height: 1.8;
+      }
+
+      .company-footer {
+        background: #efefef;
+        border-top: 1px solid #d0d5dd;
+        padding: 60px 40px 20px;
+      }
+
+      .company-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 4px;
+      }
+
+      .social-links img {
+        width: 32px;
+        height: 32px;
+      }
+
+      .disclaimer {
+        color: #475467;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1.5;
+        text-align: justify;
+        margin-bottom: 24px;
+      }
+
+      .variable-tag {
+        background: #fef3c7;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "Monaco", "Menlo", monospace;
+        font-size: 0.875rem;
+        color: #92400e;
+        font-weight: 500;
+      }
+
+      @media (max-width: 1024px) {
         .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 20px;
-            display: flex;
-            gap: 20px;
-            min-height: 100vh;
+          flex-direction: column;
+          gap: 16px;
         }
 
         .sidebar {
-            width: 400px;
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            height: fit-content;
-            position: sticky;
-            top: 20px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .sidebar h2 {
-            color: #4a5568;
-            margin-bottom: 25px;
-            text-align: center;
-            font-size: 1.5em;
-            position: relative;
-        }
-
-        .sidebar h2:after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 2px;
-        }
-
-        .control-group {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-        .control-group h3 {
-            color: #4a5568;
-            margin-bottom: 12px;
-            font-size: 1.1em;
-        }
-
-        .control-item {
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .control-item label {
-            flex: 1;
-            font-weight: 500;
-            color: #2d3748;
-            font-size: 0.9em;
-        }
-
-        .control-item input[type="text"],
-        .control-item input[type="date"],
-        .control-item textarea,
-        .control-item select {
-            flex: 1;
-            padding: 8px 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 13px;
-            transition: border-color 0.3s ease;
-        }
-
-        .control-item input[type="text"]:focus,
-        .control-item input[type="date"]:focus,
-        .control-item textarea:focus,
-        .control-item select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .control-item textarea {
-            resize: vertical;
-            min-height: 50px;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 50px;
-            height: 24px;
-            background: #cbd5e0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .toggle-switch.active {
-            background: #667eea;
-        }
-
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .toggle-switch.active::after {
-            transform: translateX(26px);
-        }
-
-        .trading-schedule {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .trading-schedule h4 {
-            color: #4a5568;
-            margin-bottom: 10px;
-            font-size: 1em;
-        }
-
-        .schedule-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 4px;
-        }
-
-        .schedule-item input {
-            padding: 4px 8px;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .main-content {
-            flex: 1;
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .preview-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .preview-header h2 {
-            color: #4a5568;
-            font-size: 1.5em;
-        }
-
-        .language-tabs {
-            display: flex;
-            gap: 10px;
-            background: #f8f9fa;
-            padding: 5px;
-            border-radius: 10px;
-        }
-
-        .language-tab {
-            padding: 10px 20px;
-            border: none;
-            background: transparent;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            color: #4a5568;
-        }
-
-        .language-tab.active {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .preview-area {
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 20px;
-            background: #fafafa;
-            min-height: 700px;
-            position: relative;
-            overflow: auto;
-        }
-
-        .template-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .template-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .sortable-block {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 2px dashed #e2e8f0;
-            border-radius: 8px;
-            cursor: move;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .sortable-block:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
-        }
-
-        .sortable-block.ui-sortable-helper {
-            transform: rotate(2deg);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .email-template {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
-        }
-
-        .email-header {
-            background: #ececec;
-            text-align: center;
-            padding: 30px;
-        }
-
-        .email-logo {
-            max-width: 100px;
-            height: auto;
-        }
-
-        .email-hero {
-            background: white;
-            text-align: center;
-            padding: 0;
-        }
-
-        .email-hero img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .email-body {
-            background: white;
-            padding: 60px 40px;
-        }
-
-        .email-body p {
-            color: #475467;
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 1.8;
-            margin-bottom: 16px;
-        }
-
-        .schedule-section {
-            background: #f9f9f9;
-            padding: 60px 40px 40px;
-            text-align: center;
-        }
-
-        .schedule-title {
-            color: #101112;
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 30px;
-        }
-
-        .schedule-table {
-            background: white;
-            border: 1px solid #d0d5dd;
-            border-radius: 10px;
-            margin: 20px auto;
-            overflow: hidden;
-            max-width: 500px;
-        }
-
-        .schedule-date {
-            background: #efefef;
-            padding: 15px;
-            font-weight: 700;
-            color: #000;
-            text-align: center;
-            border-bottom: 1px solid #d0d5dd;
-        }
-
-        .schedule-row {
-            display: flex;
-            padding: 10px 25px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .schedule-row:last-child {
-            border-bottom: none;
-        }
-
-        .schedule-row:nth-child(even) {
-            background: #ffffff;
-        }
-
-        .schedule-row:nth-child(odd) {
-            background: #f9f9f9;
-        }
-
-        .schedule-instrument {
-            flex: 1;
-            text-align: left;
-            font-weight: 500;
-            color: #475467;
-        }
-
-        .schedule-time {
-            flex: 1;
-            text-align: left;
-            color: #475467;
-        }
-
-        .email-footer {
-            background: white;
-            padding: 60px 40px;
-            text-align: left;
-        }
-
-        .email-footer p {
-            color: #475467;
-            font-size: 16px;
-            line-height: 1.8;
-        }
-
-        .company-footer {
-            background: #efefef;
-            border-top: 1px solid #d0d5dd;
-            padding: 60px 40px 20px;
-        }
-
-        .company-info {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 4px;
-        }
-
-        .social-links img {
-            width: 32px;
-            height: 32px;
-        }
-
-        .disclaimer {
-            color: #475467;
-            font-size: 11px;
-            font-weight: 500;
-            line-height: 1.5;
-            text-align: justify;
-            margin-bottom: 24px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-secondary {
-            background: #f8f9fa;
-            color: #4a5568;
-            border: 2px solid #e2e8f0;
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: #e53e3e;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c53030;
-            transform: translateY(-2px);
-        }
-
-        .variable-tag {
-            background: #fff3cd;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9em;
-            color: #856404;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 10px 15px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            border: 1px solid #c3e6cb;
-        }
-
-        .add-row-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-top: 10px;
-        }
-
-        .remove-row-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 2px 6px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 11px;
-            margin-left: 5px;
-        }
-
-        @media (max-width: 1024px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                position: static;
-                max-height: none;
-            }
-        }
+          width: 100%;
+          position: static;
+          max-height: none;
+        }
+      }
+
+      .sortable-schedule-container {
+        min-height: 50px;
+      }
+
+      .schedule-placeholder {
+        background: #dbeafe;
+        border: 2px dashed #3b82f6;
+        border-radius: 4px;
+        height: 40px;
+        margin-bottom: 4px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="sidebar">
-            <h2>4XC Template Builder</h2>
-            
-            <div class="control-group">
-                <h3>Basic Variables</h3>
-                <div class="control-item">
-                    <label>First Name:</label>
-                    <input type="text" id="var-firstname" placeholder="John">
-                </div>
-                <div class="control-item">
-                    <label>Holiday/Event:</label>
-                    <input type="text" id="var-holiday" placeholder="US Independence Day">
-                </div>
-                <div class="control-item">
-                    <label>Date 1:</label>
-                    <input type="date" id="var-date1" value="2025-07-03">
-                </div>
-                <div class="control-item">
-                    <label>Date 2:</label>
-                    <input type="date" id="var-date2" value="2025-07-04">
-                </div>
-                <div class="control-item">
-                    <label>Server Time:</label>
-                    <input type="text" id="var-servertime" placeholder="MT4/MT5 Server time">
-                </div>
-            </div>
+      <div class="sidebar">
+        <h2>4XC Template Builder</h2>
 
-            <div class="control-group">
-                <h3>Content Sections</h3>
-                <div class="control-item">
-                    <label>Header/Logo:</label>
-                    <div class="toggle-switch active" data-target="header-section"></div>
-                </div>
-                <div class="control-item">
-                    <label>Hero Image:</label>
-                    <div class="toggle-switch active" data-target="hero-section"></div>
-                </div>
-                <div class="control-item">
-                    <label>Main Message:</label>
-                    <div class="toggle-switch active" data-target="main-message"></div>
-                </div>
-                <div class="control-item">
-                    <label>Trading Schedule:</label>
-                    <div class="toggle-switch active" data-target="trading-schedule"></div>
-                </div>
-                <div class="control-item">
-                    <label>Footer Message:</label>
-                    <div class="toggle-switch active" data-target="footer-message"></div>
-                </div>
-                <div class="control-item">
-                    <label>Company Footer:</label>
-                    <div class="toggle-switch active" data-target="company-footer"></div>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <h3>Custom Text</h3>
-                <div class="control-item">
-                    <label>Custom Greeting:</label>
-                    <textarea id="custom-greeting" placeholder="Custom greeting message..."></textarea>
-                </div>
-                <div class="control-item">
-                    <label>Additional Info:</label>
-                    <textarea id="additional-info" placeholder="Additional information..."></textarea>
-                </div>
-                <div class="control-item">
-                    <label>Subject Line:</label>
-                    <input type="text" id="subject-line" placeholder="Trading Hours Update">
-                </div>
-            </div>
-
-            <div class="control-group">
-                <h3>Trading Schedule</h3>
-                <div class="trading-schedule">
-                    <h4>Thursday Schedule</h4>
-                    <div id="thursday-schedule">
-                        <div class="schedule-item">
-                            <input type="text" placeholder="US30xx" class="instrument">
-                            <input type="text" placeholder="Early close 20:15" class="time">
-                            <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
-                        </div>
-                        <div class="schedule-item">
-                            <input type="text" placeholder="US100xx" class="instrument">
-                            <input type="text" placeholder="Early close 20:15" class="time">
-                            <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
-                        </div>
-                        <div class="schedule-item">
-                            <input type="text" placeholder="US500xx" class="instrument">
-                            <input type="text" placeholder="Early close 20:15" class="time">
-                            <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
-                        </div>
-                    </div>
-                    <button class="add-row-btn" onclick="addScheduleRow('thursday')">+ Add Row</button>
-                </div>
-
-                <div class="trading-schedule">
-                    <h4>Friday Schedule</h4>
-                    <div id="friday-schedule">
-                        <div class="schedule-item">
-                            <input type="text" placeholder="XAUUSDxx" class="instrument">
-                            <input type="text" placeholder="Early close 19:45" class="time">
-                            <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
-                        </div>
-                        <div class="schedule-item">
-                            <input type="text" placeholder="XAGUSDxx" class="instrument">
-                            <input type="text" placeholder="Early close 19:45" class="time">
-                            <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
-                        </div>
-                        <div class="schedule-item">
-                            <input type="text" placeholder="US30xx" class="instrument">
-                            <input type="text" placeholder="Early close 20:00" class="time">
-                            <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
-                        </div>
-                    </div>
-                    <button class="add-row-btn" onclick="addScheduleRow('friday')">+ Add Row</button>
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="saveTemplate()">Save Template</button>
-                <button class="btn btn-secondary" onclick="exportTemplate()">Export HTML</button>
-                <button class="btn btn-danger" onclick="resetTemplate()">Reset</button>
-            </div>
+        <div class="control-group">
+          <h3>Basic Variables</h3>
+          <div class="control-item">
+            <label>First Name:</label>
+            <input
+              type="text"
+              id="var-firstname"
+              placeholder="John"
+              value="John"
+            />
+          </div>
+          <div class="control-item">
+            <label>Holiday/Event:</label>
+            <input
+              type="text"
+              id="var-holiday"
+              placeholder="US Independence Day"
+              value="US Independence Day"
+            />
+          </div>
+          <div class="control-item">
+            <label>Date 1:</label>
+            <input type="date" id="var-date1" value="2025-07-03" />
+          </div>
+          <div class="control-item">
+            <label>Date 2:</label>
+            <input type="date" id="var-date2" value="2025-07-04" />
+          </div>
+          <div class="control-item">
+            <label>Server Time:</label>
+            <input
+              type="text"
+              id="var-servertime"
+              placeholder="MT4/MT5 Server time"
+              value="MT4/MT5 Server time"
+            />
+          </div>
         </div>
 
-        <div class="main-content">
-            <div class="preview-header">
-                <h2>Live Preview</h2>
-                <div class="language-tabs">
-                    <button class="language-tab active" onclick="switchLanguage('en')">EN</button>
-                    <button class="language-tab" onclick="switchLanguage('pt')">PT</button>
-                    <button class="language-tab" onclick="switchLanguage('es')">ES</button>
-                </div>
-            </div>
-
-            <div class="preview-area" id="preview-area">
-                <div class="template-content active" id="template-en">
-                    <div class="email-template">
-                        <div class="sortable-container" id="sortable-en">
-                            <div class="sortable-block" data-block="header-section">
-                                <div class="email-header">
-                                    <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/6lf/aar/sd5/Logo%20White.png" alt="4XC Logo" class="email-logo">
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="hero-section">
-                                <div class="email-hero">
-                                    <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/jq9/vhs/8nt/us-en.png" alt="Holiday Banner" style="width: 100%;">
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="main-message">
-                                <div class="email-body">
-                                    <p>Good day <span class="variable-tag">{{firstname}}</span>,</p>
-                                    <p>Due to <strong><span class="variable-tag">{{holiday}}</span></strong>, trading times will be affected on <strong><span class="variable-tag">{{date1}}</span></strong> and on <strong><span class="variable-tag">{{date2}}</span> (<span class="variable-tag">{{servertime}}</span>)</strong>.</p>
-                                    <div id="custom-greeting-display"></div>
-                                    <div id="additional-info-display"></div>
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="trading-schedule">
-                                <div class="schedule-section">
-                                    <div class="schedule-title">ADJUSTED TIMETABLE</div>
-                                    
-                                    <div class="schedule-table">
-                                        <div class="schedule-date">Thursday – <span class="variable-tag">{{date1}}</span></div>
-                                        <div id="thursday-schedule-display"></div>
-                                    </div>
-
-                                    <div class="schedule-table">
-                                        <div class="schedule-date">Friday – <span class="variable-tag">{{date2}}</span></div>
-                                        <div id="friday-schedule-display"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="footer-message">
-                                <div class="email-footer">
-                                    <p>Regards,<br><strong>the 4XC team</strong></p>
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="company-footer">
-                                <div class="company-footer">
-                                    <div class="company-info">
-                                        <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/qgf/1gy/is6/Logo.png" alt="4XC Logo" style="max-width: 85px;">
-                                        <div class="social-links">
-                                            <a href="https://www.instagram.com/4xcofficial/"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/instagram@2x.png" alt="Instagram"></a>
-                                            <a href="https://www.facebook.com/4xCofficial"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/facebook@2x.png" alt="Facebook"></a>
-                                            <a href="https://x.com/4xcofficial"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/twitter@2x.png" alt="X"></a>
-                                            <a href="https://www.youtube.com/@4xc374"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/youtube@2x.png" alt="YouTube"></a>
-                                        </div>
-                                    </div>
-                                    <div class="disclaimer">
-                                        <strong>Aviso de Investimento de Alto Risco:</strong> Negociar Forex/CFDs com margem acarreta um alto nível de risco e pode não ser adequado para todos os investidores, pois você pode sofrer perdas superiores aos depósitos. Os produtos são destinados a clientes de varejo, profissionais e contrapartes elegíveis. Para clientes que mantêm conta(s) com 4XC, clientes de varejo podem sofrer uma perda total dos fundos depositados, mas não estão sujeitos a obrigações de pagamento subsequentes além dos fundos depositados e clientes profissionais podem sofrer perdas superiores aos depósitos. Antes de negociar qualquer produto oferecido pela 4XC, qualquer afiliada das empresas mencionadas, ou outras empresas dentro do grupo 4XC [coletivamente a "4xCube Ltd"], considere cuidadosamente sua situação financeira e nível de experiência. A 4xCube Ltd pode fornecer comentários gerais que não se destinam como conselhos de investimento e não devem ser interpretados como tal. Procure aconselhamento de um consultor financeiro separado. A 4xCube Ltd não assume responsabilidade por erros, imprecisões ou omissões; não garante a precisão, completude de informações, texto, gráficos, links ou outros itens contidos nestes materiais. Leia e compreenda os Termos e Condições nos sites da 4xCube Ltd antes de tomar outras medidas. 4XC é uma marca registrada da 4xCube Ltd, registrada nas Ilhas Cook com número ICA 12767/2018 e licenciada pela FSC (Comissão de Supervisão Financeira) com licença de câmbio de dinheiro número MC03/2018 (A licença se aplica apenas aos produtos Forex).<br><br>4xCube Ltd é auditada pela McMillan Woods<br><br>4xCube Ltd não oferece seus serviços a residentes de certas jurisdições como EUA, Iraque, Irã, Mianmar, Coreia do Norte e Ucrânia.
-                                    </div>
-                                    <div style="color: #475467; font-size: 11px; margin-bottom: 10px;">
-                                        %SENDER-INFO-SINGLELINE%
-                                    </div>
-                                    <div style="color: #475467; font-size: 11px;">
-                                        © Copyright 2025. 4XC Todos os Direitos Reservados.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="template-content" id="template-es">
-                    <div class="email-template">
-                        <div class="sortable-container" id="sortable-es">
-                            <div class="sortable-block" data-block="header-section">
-                                <div class="email-header">
-                                    <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/6lf/aar/sd5/Logo%20White.png" alt="4XC Logo" class="email-logo">
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="hero-section">
-                                <div class="email-hero">
-                                    <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/jq9/vhs/8nt/us-en.png" alt="Holiday Banner" style="width: 100%;">
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="main-message">
-                                <div class="email-body">
-                                    <p>Buen día <span class="variable-tag">{{firstname}}</span>,</p>
-                                    <p>Debido al <strong><span class="variable-tag">{{holiday}}</span></strong>, los horarios de negociación se verán afectados el <strong><span class="variable-tag">{{date1}}</span></strong> y el <strong><span class="variable-tag">{{date2}}</span> (<span class="variable-tag">{{servertime}}</span>)</strong>.</p>
-                                    <div id="custom-greeting-display-es"></div>
-                                    <div id="additional-info-display-es"></div>
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="trading-schedule">
-                                <div class="schedule-section">
-                                    <div class="schedule-title">HORARIO AJUSTADO</div>
-                                    
-                                    <div class="schedule-table">
-                                        <div class="schedule-date">Jueves – <span class="variable-tag">{{date1}}</span></div>
-                                        <div id="thursday-schedule-display-es"></div>
-                                    </div>
-
-                                    <div class="schedule-table">
-                                        <div class="schedule-date">Viernes – <span class="variable-tag">{{date2}}</span></div>
-                                        <div id="friday-schedule-display-es"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="footer-message">
-                                <div class="email-footer">
-                                    <p>Saludos,<br><strong>el equipo 4XC</strong></p>
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="company-footer">
-                                <div class="company-footer">
-                                    <div class="company-info">
-                                        <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/qgf/1gy/is6/Logo.png" alt="4XC Logo" style="max-width: 85px;">
-                                        <div class="social-links">
-                                            <a href="https://www.instagram.com/4xcofficial/"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/instagram@2x.png" alt="Instagram"></a>
-                                            <a href="https://www.facebook.com/4xCofficial"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/facebook@2x.png" alt="Facebook"></a>
-                                            <a href="https://x.com/4xcofficial"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/twitter@2x.png" alt="X"></a>
-                                            <a href="https://www.youtube.com/@4xc374"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/youtube@2x.png" alt="YouTube"></a>
-                                        </div>
-                                    </div>
-                                    <div class="disclaimer">
-                                        <strong>Aviso de Inversión de Alto Riesgo:</strong> Operar Forex/CFDs con margen conlleva un alto nivel de riesgo y puede no ser adecuado para todos los inversores, ya que podrías sufrir pérdidas superiores a los depósitos. Los productos están destinados a clientes minoristas, profesionales y contrapartes elegibles. Para clientes que mantienen cuenta(s) con 4XC, los clientes minoristas podrían sufrir una pérdida total de los fondos depositados pero no están sujetos a obligaciones de pago posteriores más allá de los fondos depositados y los clientes profesionales podrían sufrir pérdidas superiores a los depósitos. Antes de operar cualquier producto ofrecido por 4XC, cualquier afiliada de las empresas mencionadas, u otras empresas dentro del grupo 4XC [colectivamente la "4xCube Ltd"], considere cuidadosamente su situación financiera y nivel de experiencia. 4xCube Ltd puede proporcionar comentarios generales que no están destinados como consejos de inversión y no deben interpretarse como tales. Busque asesoramiento de un asesor financiero independiente. 4xCube Ltd no asume responsabilidad por errores, inexactitudes u omisiones; no garantiza la precisión, completitud de información, texto, gráficos, enlaces u otros elementos contenidos en estos materiales. Lea y comprenda los Términos y Condiciones en los sitios web de 4xCube Ltd antes de tomar medidas adicionales. 4XC es una marca comercial de 4xCube Ltd, registrada en las Islas Cook con número ICA 12767/2018 y licenciada por la FSC (Comisión de Supervisión Financiera) con licencia de cambio de dinero número MC03/2018 (La licencia se aplica solo a productos Forex).<br><br>4xCube Ltd es auditada por McMillan Woods<br><br>4xCube Ltd no ofrece sus servicios a residentes de ciertas jurisdicciones como Estados Unidos, Irak, Irán, Myanmar, Corea del Norte y Ucrania.
-                                    </div>
-                                    <div style="color: #475467; font-size: 11px; margin-bottom: 10px;">
-                                        %SENDER-INFO-SINGLELINE%
-                                    </div>
-                                    <div style="color: #475467; font-size: 11px;">
-                                        © Copyright 2025. 4XC Todos los Derechos Reservados.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="control-group">
+          <h3>Content Sections</h3>
+          <div class="control-item">
+            <label>Header/Logo:</label>
+            <div
+              class="toggle-switch active"
+              data-target="header-section"
+            ></div>
+          </div>
+          <div class="control-item">
+            <label>Hero Image:</label>
+            <div class="toggle-switch active" data-target="hero-section"></div>
+          </div>
+          <div class="control-item">
+            <label>Main Message:</label>
+            <div class="toggle-switch active" data-target="main-message"></div>
+          </div>
+          <div class="control-item">
+            <label>Trading Schedule:</label>
+            <div
+              class="toggle-switch active"
+              data-target="trading-schedule"
+            ></div>
+          </div>
+          <div class="control-item">
+            <label>Footer Message:</label>
+            <div
+              class="toggle-switch active"
+              data-target="footer-message"
+            ></div>
+          </div>
+          <div class="control-item">
+            <label>Company Footer:</label>
+            <div
+              class="toggle-switch active"
+              data-target="company-footer"
+            ></div>
+          </div>
         </div>
+
+        <div class="control-group">
+          <h3>Custom Text</h3>
+          <div class="control-item">
+            <label>Custom Greeting:</label>
+            <textarea
+              id="custom-greeting"
+              placeholder="Custom greeting message..."
+            ></textarea>
+          </div>
+          <div class="control-item">
+            <label>Additional Info:</label>
+            <textarea
+              id="additional-info"
+              placeholder="Additional information..."
+            ></textarea>
+          </div>
+          <div class="control-item">
+            <label>Subject Line:</label>
+            <input
+              type="text"
+              id="subject-line"
+              placeholder="Trading Hours Update"
+            />
+          </div>
+        </div>
+
+        <div class="control-group">
+          <h3>Trading Schedule</h3>
+          <div id="schedule-sections-container">
+            <div class="trading-schedule" data-day="thursday">
+              <div class="schedule-header">
+                <h4>Thursday Schedule</h4>
+                <button
+                  class="remove-schedule-btn"
+                  onclick="removeScheduleSection(this)"
+                >
+                  ×
+                </button>
+              </div>
+              <div id="thursday-schedule" class="sortable-schedule-container">
+                <div class="schedule-item schedule-row-sortable">
+                  <span class="drag-handle">⋮⋮</span>
+                  <input
+                    type="text"
+                    placeholder="US30xx"
+                    class="instrument"
+                    value="US30xx"
+                  />
+                  <select class="status">
+                    <option value="early-close">Early Close</option>
+                    <option value="late-start">Late Start</option>
+                    <option value="closed">Trading Closed</option>
+                  </select>
+                  <input type="time" class="time-input" value="20:15" />
+                  <button
+                    class="remove-row-btn"
+                    onclick="removeScheduleRow(this)"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div class="schedule-item schedule-row-sortable">
+                  <span class="drag-handle">⋮⋮</span>
+                  <input
+                    type="text"
+                    placeholder="US100xx"
+                    class="instrument"
+                    value="US100xx"
+                  />
+                  <select class="status">
+                    <option value="early-close">Early Close</option>
+                    <option value="late-start">Late Start</option>
+                    <option value="closed">Trading Closed</option>
+                  </select>
+                  <input type="time" class="time-input" value="20:15" />
+                  <button
+                    class="remove-row-btn"
+                    onclick="removeScheduleRow(this)"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div class="schedule-item schedule-row-sortable">
+                  <span class="drag-handle">⋮⋮</span>
+                  <input
+                    type="text"
+                    placeholder="US500xx"
+                    class="instrument"
+                    value="US500xx"
+                  />
+                  <select class="status">
+                    <option value="early-close">Early Close</option>
+                    <option value="late-start">Late Start</option>
+                    <option value="closed">Trading Closed</option>
+                  </select>
+                  <input type="time" class="time-input" value="20:15" />
+                  <button
+                    class="remove-row-btn"
+                    onclick="removeScheduleRow(this)"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              <button class="add-row-btn" onclick="addScheduleRow('thursday')">
+                + Add Row
+              </button>
+            </div>
+
+            <div class="trading-schedule" data-day="friday">
+              <div class="schedule-header">
+                <h4>Friday Schedule</h4>
+                <button
+                  class="remove-schedule-btn"
+                  onclick="removeScheduleSection(this)"
+                >
+                  ×
+                </button>
+              </div>
+              <div id="friday-schedule" class="sortable-schedule-container">
+                <div class="schedule-item schedule-row-sortable">
+                  <span class="drag-handle">⋮⋮</span>
+                  <input
+                    type="text"
+                    placeholder="XAUUSDxx"
+                    class="instrument"
+                    value="XAUUSDxx"
+                  />
+                  <select class="status">
+                    <option value="early-close">Early Close</option>
+                    <option value="late-start">Late Start</option>
+                    <option value="closed">Trading Closed</option>
+                  </select>
+                  <input type="time" class="time-input" value="19:45" />
+                  <button
+                    class="remove-row-btn"
+                    onclick="removeScheduleRow(this)"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div class="schedule-item schedule-row-sortable">
+                  <span class="drag-handle">⋮⋮</span>
+                  <input
+                    type="text"
+                    placeholder="XAGUSDxx"
+                    class="instrument"
+                    value="XAGUSDxx"
+                  />
+                  <select class="status">
+                    <option value="early-close">Early Close</option>
+                    <option value="late-start">Late Start</option>
+                    <option value="closed">Trading Closed</option>
+                  </select>
+                  <input type="time" class="time-input" value="19:45" />
+                  <button
+                    class="remove-row-btn"
+                    onclick="removeScheduleRow(this)"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div class="schedule-item schedule-row-sortable">
+                  <span class="drag-handle">⋮⋮</span>
+                  <input
+                    type="text"
+                    placeholder="US30xx"
+                    class="instrument"
+                    value="US30xx"
+                  />
+                  <select class="status">
+                    <option value="early-close">Early Close</option>
+                    <option value="late-start">Late Start</option>
+                    <option value="closed">Trading Closed</option>
+                  </select>
+                  <input type="time" class="time-input" value="20:00" />
+                  <button
+                    class="remove-row-btn"
+                    onclick="removeScheduleRow(this)"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              <button class="add-row-btn" onclick="addScheduleRow('friday')">
+                + Add Row
+              </button>
+            </div>
+          </div>
+          <button
+            class="btn btn-primary"
+            onclick="addScheduleSection()"
+            style="width: 100%; margin-top: 12px"
+          >
+            + Add Schedule Section
+          </button>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn btn-primary" onclick="saveTemplate()">
+            Save Template
+          </button>
+          <button class="btn btn-secondary" onclick="exportTemplate()">
+            Export HTML
+          </button>
+          <button class="btn btn-danger" onclick="resetTemplate()">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="preview-header">
+          <h2>Live Preview</h2>
+          <div class="language-tabs">
+            <button class="language-tab active" onclick="switchLanguage('en')">
+              EN
+            </button>
+            <button class="language-tab" onclick="switchLanguage('pt')">
+              PT
+            </button>
+            <button class="language-tab" onclick="switchLanguage('es')">
+              ES
+            </button>
+          </div>
+        </div>
+
+        <div class="preview-area" id="preview-area">
+          <div class="template-content active" id="template-en">
+            <div class="email-template">
+              <div class="sortable-container" id="sortable-en">
+                <div class="sortable-block" data-block="header-section">
+                  <div class="email-header">
+                    <img
+                      src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/6lf/aar/sd5/Logo%20White.png"
+                      alt="4XC Logo"
+                      class="email-logo"
+                    />
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="hero-section">
+                  <div class="email-hero">
+                    <img
+                      src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/jq9/vhs/8nt/us-en.png"
+                      alt="Holiday Banner"
+                      style="width: 100%"
+                    />
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="main-message">
+                  <div class="email-body">
+                    <p>
+                      Good day <span class="variable-tag">{{firstname}}</span>,
+                    </p>
+                    <p>
+                      Due to
+                      <strong
+                        ><span class="variable-tag">{{holiday}}</span></strong
+                      >, trading times will be affected on
+                      <strong
+                        ><span class="variable-tag">{{date1}}</span></strong
+                      >
+                      and on
+                      <strong
+                        ><span class="variable-tag">{{date2}}</span> (<span
+                          class="variable-tag"
+                          >{{servertime}}</span
+                        >)</strong
+                      >.
+                    </p>
+                    <div id="custom-greeting-display"></div>
+                    <div id="additional-info-display"></div>
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="trading-schedule">
+                  <div class="schedule-section">
+                    <div class="schedule-title">ADJUSTED TIMETABLE</div>
+                    <div id="schedule-tables-display"></div>
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="footer-message">
+                  <div class="email-footer">
+                    <p>Regards,<br /><strong>the 4XC team</strong></p>
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="company-footer">
+                  <div class="company-footer">
+                    <div class="company-info">
+                      <img
+                        src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/qgf/1gy/is6/Logo.png"
+                        alt="4XC Logo"
+                        style="max-width: 85px"
+                      />
+                      <div class="social-links">
+                        <a href="https://www.instagram.com/4xcofficial/"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/instagram@2x.png"
+                            alt="Instagram"
+                        /></a>
+                        <a href="https://www.facebook.com/4xCofficial"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/facebook@2x.png"
+                            alt="Facebook"
+                        /></a>
+                        <a href="https://x.com/4xcofficial"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/twitter@2x.png"
+                            alt="X"
+                        /></a>
+                        <a href="https://www.youtube.com/@4xc374"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/youtube@2x.png"
+                            alt="YouTube"
+                        /></a>
+                      </div>
+                    </div>
+                    <div class="disclaimer">
+                      <strong>High Risk Investment Notice:</strong> Trading
+                      Forex/CFDs on margin carries a high level of risk and may
+                      not be suitable for all investors as you could sustain
+                      losses in excess of deposits. The products are intended
+                      for retail, professional and eligible counterparty
+                      clients. For clients who maintain account(s) with 4XC,
+                      retail clients could sustain a total loss of deposited
+                      funds but are not subject to subsequent payment
+                      obligations beyond the deposited funds and professional
+                      clients could sustain losses in excess of deposits. Prior
+                      to trading any products offered by 4XC, any affiliates of
+                      aforementioned firms, or other firms within 4XC of
+                      companies [collectively the "4xCube Ltd"], carefully
+                      consider your financial situation and experience level.
+                      4xCube Ltd may provide general commentary which is not
+                      intended as investment advice and must not be construed as
+                      such. Seek advice from a separate financial advisor.
+                      4xCube Ltd assumes no liability for errors, inaccuracies
+                      or omissions; does not warrant the accuracy, completeness
+                      of information, text, graphics, links or other items
+                      contained within these materials. Read and understand the
+                      Terms and Conditions on 4xCube Ltd websites prior to
+                      taking further action. 4XC is a trademark of 4xCube Ltd,
+                      registered in the Cook Islands with number ICA 12767/2018
+                      and licensed by the FSC (Financial Supervisory Commission)
+                      with Money-Changing License number MC03/2018 (License
+                      applies only to Forex Products).<br /><br />4xCube Ltd is
+                      audited by McMillan Woods<br /><br />4xCube Ltd does not
+                      offer its services to residents of certain jurisdictions
+                      such as USA, Iraq, Iran, Myanmar, North Korea and Ukraine.
+                    </div>
+                    <div
+                      style="
+                        color: #475467;
+                        font-size: 11px;
+                        margin-bottom: 10px;
+                      "
+                    >
+                      %SENDER-INFO-SINGLELINE%
+                    </div>
+                    <div style="color: #475467; font-size: 11px">
+                      © Copyright 2025. 4XC All Rights Reserved.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="template-content" id="template-pt">
+            <div class="email-template">
+              <div class="sortable-container" id="sortable-pt">
+                <div class="sortable-block" data-block="header-section">
+                  <div class="email-header">
+                    <img
+                      src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/6lf/aar/sd5/Logo%20White.png"
+                      alt="4XC Logo"
+                      class="email-logo"
+                    />
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="hero-section">
+                  <div class="email-hero">
+                    <img
+                      src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/jq9/vhs/8nt/us-en.png"
+                      alt="Holiday Banner"
+                      style="width: 100%"
+                    />
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="main-message">
+                  <div class="email-body">
+                    <p>
+                      Bom dia <span class="variable-tag">{{firstname}}</span>,
+                    </p>
+                    <p>
+                      Devido ao
+                      <strong
+                        ><span class="variable-tag">{{holiday}}</span></strong
+                      >, os horários de negociação serão afetados em
+                      <strong
+                        ><span class="variable-tag">{{date1}}</span></strong
+                      >
+                      e em
+                      <strong
+                        ><span class="variable-tag">{{date2}}</span> (<span
+                          class="variable-tag"
+                          >{{servertime}}</span
+                        >)</strong
+                      >.
+                    </p>
+                    <div id="custom-greeting-display-pt"></div>
+                    <div id="additional-info-display-pt"></div>
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="trading-schedule">
+                  <div class="schedule-section">
+                    <div class="schedule-title">HORÁRIO AJUSTADO</div>
+                    <div id="schedule-tables-display-pt"></div>
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="footer-message">
+                  <div class="email-footer">
+                    <p>Atenciosamente,<br /><strong>a equipe 4XC</strong></p>
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="company-footer">
+                  <div class="company-footer">
+                    <div class="company-info">
+                      <img
+                        src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/qgf/1gy/is6/Logo.png"
+                        alt="4XC Logo"
+                        style="max-width: 85px"
+                      />
+                      <div class="social-links">
+                        <a href="https://www.instagram.com/4xcofficial/"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/instagram@2x.png"
+                            alt="Instagram"
+                        /></a>
+                        <a href="https://www.facebook.com/4xCofficial"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/facebook@2x.png"
+                            alt="Facebook"
+                        /></a>
+                        <a href="https://x.com/4xcofficial"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/twitter@2x.png"
+                            alt="X"
+                        /></a>
+                        <a href="https://www.youtube.com/@4xc374"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/youtube@2x.png"
+                            alt="YouTube"
+                        /></a>
+                      </div>
+                    </div>
+                    <div class="disclaimer">
+                      <strong>Aviso de Investimento de Alto Risco:</strong>
+                      Negociar Forex/CFDs com margem acarreta um alto nível de
+                      risco e pode não ser adequado para todos os investidores,
+                      pois você pode sofrer perdas superiores aos depósitos. Os
+                      produtos são destinados a clientes de varejo,
+                      profissionais e contrapartes elegíveis. Para clientes que
+                      mantêm conta(s) com 4XC, clientes de varejo podem sofrer
+                      uma perda total dos fundos depositados, mas não estão
+                      sujeitos a obrigações de pagamento subsequentes além dos
+                      fundos depositados e clientes profissionais podem sofrer
+                      perdas superiores aos depósitos. Antes de negociar
+                      qualquer produto oferecido pela 4XC, qualquer afiliada das
+                      empresas mencionadas, ou outras empresas dentro do grupo
+                      4XC [coletivamente a "4xCube Ltd"], considere
+                      cuidadosamente sua situação financeira e nível de
+                      experiência. A 4xCube Ltd pode fornecer comentários gerais
+                      que não se destinam como conselhos de investimento e não
+                      devem ser interpretados como tal. Procure aconselhamento
+                      de um consultor financeiro separado. A 4xCube Ltd não
+                      assume responsabilidade por erros, imprecisões ou
+                      omissões; não garante a precisão, completude de
+                      informações, texto, gráficos, links ou outros itens
+                      contidos nestes materiais. Leia e compreenda os Termos e
+                      Condições nos sites da 4xCube Ltd antes de tomar outras
+                      medidas. 4XC é uma marca registrada da 4xCube Ltd,
+                      registrada nas Ilhas Cook com número ICA 12767/2018 e
+                      licenciada pela FSC (Comissão de Supervisão Financeira)
+                      com licença de câmbio de dinheiro número MC03/2018 (A
+                      licença se aplica apenas aos produtos Forex).<br /><br />4xCube
+                      Ltd é auditada pela McMillan Woods<br /><br />4xCube Ltd
+                      não oferece seus serviços a residentes de certas
+                      jurisdições como EUA, Iraque, Irã, Mianmar, Coreia do
+                      Norte e Ucrânia.
+                    </div>
+                    <div
+                      style="
+                        color: #475467;
+                        font-size: 11px;
+                        margin-bottom: 10px;
+                      "
+                    >
+                      %SENDER-INFO-SINGLELINE%
+                    </div>
+                    <div style="color: #475467; font-size: 11px">
+                      © Copyright 2025. 4XC Todos os Direitos Reservados.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="template-content" id="template-es">
+            <div class="email-template">
+              <div class="sortable-container" id="sortable-es">
+                <div class="sortable-block" data-block="header-section">
+                  <div class="email-header">
+                    <img
+                      src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/6lf/aar/sd5/Logo%20White.png"
+                      alt="4XC Logo"
+                      class="email-logo"
+                    />
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="hero-section">
+                  <div class="email-hero">
+                    <img
+                      src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/jq9/vhs/8nt/us-en.png"
+                      alt="Holiday Banner"
+                      style="width: 100%"
+                    />
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="main-message">
+                  <div class="email-body">
+                    <p>
+                      Buen día <span class="variable-tag">{{firstname}}</span>,
+                    </p>
+                    <p>
+                      Debido al
+                      <strong
+                        ><span class="variable-tag">{{holiday}}</span></strong
+                      >, los horarios de negociación se verán afectados el
+                      <strong
+                        ><span class="variable-tag">{{date1}}</span></strong
+                      >
+                      y el
+                      <strong
+                        ><span class="variable-tag">{{date2}}</span> (<span
+                          class="variable-tag"
+                          >{{servertime}}</span
+                        >)</strong
+                      >.
+                    </p>
+                    <div id="custom-greeting-display-es"></div>
+                    <div id="additional-info-display-es"></div>
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="trading-schedule">
+                  <div class="schedule-section">
+                    <div class="schedule-title">HORARIO AJUSTADO</div>
+                    <div id="schedule-tables-display-es"></div>
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="footer-message">
+                  <div class="email-footer">
+                    <p>Saludos,<br /><strong>el equipo 4XC</strong></p>
+                  </div>
+                </div>
+
+                <div class="sortable-block" data-block="company-footer">
+                  <div class="company-footer">
+                    <div class="company-info">
+                      <img
+                        src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/qgf/1gy/is6/Logo.png"
+                        alt="4XC Logo"
+                        style="max-width: 85px"
+                      />
+                      <div class="social-links">
+                        <a href="https://www.instagram.com/4xcofficial/"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/instagram@2x.png"
+                            alt="Instagram"
+                        /></a>
+                        <a href="https://www.facebook.com/4xCofficial"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/facebook@2x.png"
+                            alt="Facebook"
+                        /></a>
+                        <a href="https://x.com/4xcofficial"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/twitter@2x.png"
+                            alt="X"
+                        /></a>
+                        <a href="https://www.youtube.com/@4xc374"
+                          ><img
+                            src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/youtube@2x.png"
+                            alt="YouTube"
+                        /></a>
+                      </div>
+                    </div>
+                    <div class="disclaimer">
+                      <strong>Aviso de Inversión de Alto Riesgo:</strong> Operar
+                      Forex/CFDs con margen conlleva un alto nivel de riesgo y
+                      puede no ser adecuado para todos los inversores, ya que
+                      podrías sufrir pérdidas superiores a los depósitos. Los
+                      productos están destinados a clientes minoristas,
+                      profesionales y contrapartes elegibles. Para clientes que
+                      mantienen cuenta(s) con 4XC, los clientes minoristas
+                      podrían sufrir una pérdida total de los fondos depositados
+                      pero no están sujetos a obligaciones de pago posteriores
+                      más allá de los fondos depositados y los clientes
+                      profesionales podrían sufrir pérdidas superiores a los
+                      depósitos. Antes de operar cualquier producto ofrecido por
+                      4XC, cualquier afiliada de las empresas mencionadas, u
+                      otras empresas dentro del grupo 4XC [colectivamente la
+                      "4xCube Ltd"], considere cuidadosamente su situación
+                      financiera y nivel de experiencia. 4xCube Ltd puede
+                      proporcionar comentarios generales que no están destinados
+                      como consejos de inversión y no deben interpretarse como
+                      tales. Busque asesoramiento de un asesor financiero
+                      independiente. 4xCube Ltd no asume responsabilidad por
+                      errores, inexactitudes u omisiones; no garantiza la
+                      precisión, completitud de información, texto, gráficos,
+                      enlaces u otros elementos contenidos en estos materiales.
+                      Lea y comprenda los Términos y Condiciones en los sitios
+                      web de 4xCube Ltd antes de tomar medidas adicionales. 4XC
+                      es una marca comercial de 4xCube Ltd, registrada en las
+                      Islas Cook con número ICA 12767/2018 y licenciada por la
+                      FSC (Comisión de Supervisión Financiera) con licencia de
+                      cambio de dinero número MC03/2018 (La licencia se aplica
+                      solo a productos Forex).<br /><br />4xCube Ltd es auditada
+                      por McMillan Woods<br /><br />4xCube Ltd no ofrece sus
+                      servicios a residentes de ciertas jurisdicciones como
+                      Estados Unidos, Irak, Irán, Myanmar, Corea del Norte y
+                      Ucrania.
+                    </div>
+                    <div
+                      style="
+                        color: #475467;
+                        font-size: 11px;
+                        margin-bottom: 10px;
+                      "
+                    >
+                      %SENDER-INFO-SINGLELINE%
+                    </div>
+                    <div style="color: #475467; font-size: 11px">
+                      © Copyright 2025. 4XC Todos los Derechos Reservados.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
-    
+
     <script>
-        // Global variables
-        let currentLanguage = 'en';
-        let templateData = {
-            variables: {
-                firstname: 'John',
-                holiday: 'US Independence Day',
-                date1: '2025-07-03',
-                date2: '2025-07-04',
-                servertime: 'MT4/MT5 Server time'
-            },
-            blocks: {
-                'header-section': true,
-                'hero-section': true,
-                'main-message': true,
-                'trading-schedule': true,
-                'footer-message': true,
-                'company-footer': true
-            },
-            customGreeting: '',
-            additionalInfo: '',
-            subjectLine: '',
-            schedules: {
-                thursday: [
-                    {instrument: 'US30xx', time: 'Early close 20:15'},
-                    {instrument: 'US100xx', time: 'Early close 20:15'},
-                    {instrument: 'US500xx', time: 'Early close 20:15'}
-                ],
-                friday: [
-                    {instrument: 'XAUUSDxx', time: 'Early close 19:45'},
-                    {instrument: 'XAGUSDxx', time: 'Early close 19:45'},
-                    {instrument: 'US30xx', time: 'Early close 20:00'}
-                ]
-            },
-            blockOrder: {
-                en: ['header-section', 'hero-section', 'main-message', 'trading-schedule', 'footer-message', 'company-footer'],
-                pt: ['header-section', 'hero-section', 'main-message', 'trading-schedule', 'footer-message', 'company-footer'],
-                es: ['header-section', 'hero-section', 'main-message', 'trading-schedule', 'footer-message', 'company-footer']
+      // Global variables
+      let currentLanguage = "en";
+      let scheduleCounter = 0;
+      let templateData = {
+        variables: {
+          firstname: "John",
+          holiday: "US Independence Day",
+          date1: "2025-07-03",
+          date2: "2025-07-04",
+          servertime: "MT4/MT5 Server time",
+        },
+        blocks: {
+          "header-section": true,
+          "hero-section": true,
+          "main-message": true,
+          "trading-schedule": true,
+          "footer-message": true,
+          "company-footer": true,
+        },
+        customGreeting: "",
+        additionalInfo: "",
+        subjectLine: "",
+        scheduleSections: [
+          {
+            id: "thursday",
+            name: "Thursday",
+            items: [
+              { instrument: "US30xx", status: "early-close", time: "20:15" },
+              { instrument: "US100xx", status: "early-close", time: "20:15" },
+              { instrument: "US500xx", status: "early-close", time: "20:15" },
+            ],
+          },
+          {
+            id: "friday",
+            name: "Friday",
+            items: [
+              { instrument: "XAUUSDxx", status: "early-close", time: "19:45" },
+              { instrument: "XAGUSDxx", status: "early-close", time: "19:45" },
+              { instrument: "US30xx", status: "early-close", time: "20:00" },
+            ],
+          },
+        ],
+        blockOrder: {
+          en: [
+            "header-section",
+            "hero-section",
+            "main-message",
+            "trading-schedule",
+            "footer-message",
+            "company-footer",
+          ],
+          pt: [
+            "header-section",
+            "hero-section",
+            "main-message",
+            "trading-schedule",
+            "footer-message",
+            "company-footer",
+          ],
+          es: [
+            "header-section",
+            "hero-section",
+            "main-message",
+            "trading-schedule",
+            "footer-message",
+            "company-footer",
+          ],
+        },
+      };
+
+      // Translation dictionary
+      const translations = {
+        status: {
+          "early-close": {
+            en: "Early close",
+            pt: "Fechamento antecipado",
+            es: "Cierre anticipado",
+          },
+          "late-start": {
+            en: "Late start",
+            pt: "Início tardio",
+            es: "Inicio tardío",
+          },
+          closed: {
+            en: "Trading closed",
+            pt: "Negociação fechada",
+            es: "Negociación cerrada",
+          },
+        },
+        days: {
+          Monday: {
+            en: "Monday",
+            pt: "Segunda-feira",
+            es: "Lunes",
+          },
+          Tuesday: {
+            en: "Tuesday",
+            pt: "Terça-feira",
+            es: "Martes",
+          },
+          Wednesday: {
+            en: "Wednesday",
+            pt: "Quarta-feira",
+            es: "Miércoles",
+          },
+          Thursday: {
+            en: "Thursday",
+            pt: "Quinta-feira",
+            es: "Jueves",
+          },
+          Friday: {
+            en: "Friday",
+            pt: "Sexta-feira",
+            es: "Viernes",
+          },
+          Saturday: {
+            en: "Saturday",
+            pt: "Sábado",
+            es: "Sábado",
+          },
+          Sunday: {
+            en: "Sunday",
+            pt: "Domingo",
+            es: "Domingo",
+          },
+        },
+        "Good day": {
+          en: "Good day",
+          pt: "Bom dia",
+          es: "Buen día",
+        },
+        "ADJUSTED TIMETABLE": {
+          en: "ADJUSTED TIMETABLE",
+          pt: "HORÁRIO AJUSTADO",
+          es: "HORARIO AJUSTADO",
+        },
+        Regards: {
+          en: "Regards,",
+          pt: "Atenciosamente,",
+          es: "Saludos,",
+        },
+        "the 4XC team": {
+          en: "the 4XC team",
+          pt: "a equipe 4XC",
+          es: "el equipo 4XC",
+        },
+      };
+
+      // Initialize the application
+      $(document).ready(function () {
+        loadTemplate();
+        initializeSortable();
+        initializeScheduleSortable();
+        bindEvents();
+        updateAllTemplates();
+      });
+
+      // Load template from sessionStorage
+      function loadTemplate() {
+        const savedData = sessionStorage.getItem("4xcEmailTemplateData");
+        if (savedData) {
+          templateData = JSON.parse(savedData);
+
+          // Update form fields
+          $("#var-firstname").val(templateData.variables.firstname);
+          $("#var-holiday").val(templateData.variables.holiday);
+          $("#var-date1").val(templateData.variables.date1);
+          $("#var-date2").val(templateData.variables.date2);
+          $("#var-servertime").val(templateData.variables.servertime);
+          $("#custom-greeting").val(templateData.customGreeting);
+          $("#additional-info").val(templateData.additionalInfo);
+          $("#subject-line").val(templateData.subjectLine);
+
+          // Update toggle switches
+          Object.keys(templateData.blocks).forEach((block) => {
+            const toggle = $(`[data-target="${block}"]`);
+            if (templateData.blocks[block]) {
+              toggle.addClass("active");
+            } else {
+              toggle.removeClass("active");
             }
-        };
+          });
 
-        // Translation dictionary
-        const translations = {
-            'Good day': {
-                en: 'Good day',
-                pt: 'Bom dia',
-                es: 'Buen día'
-            },
-            'Due to': {
-                en: 'Due to',
-                pt: 'Devido ao',
-                es: 'Debido al'
-            },
-            'trading times will be affected': {
-                en: 'trading times will be affected',
-                pt: 'os horários de negociação serão afetados',
-                es: 'los horarios de negociación se verán afectados'
-            },
-            'ADJUSTED TIMETABLE': {
-                en: 'ADJUSTED TIMETABLE',
-                pt: 'HORÁRIO AJUSTADO',
-                es: 'HORARIO AJUSTADO'
-            },
-            'Thursday': {
-                en: 'Thursday',
-                pt: 'Quinta-feira',
-                es: 'Jueves'
-            },
-            'Friday': {
-                en: 'Friday',
-                pt: 'Sexta-feira',
-                es: 'Viernes'
-            },
-            'Regards': {
-                en: 'Regards,',
-                pt: 'Atenciosamente,',
-                es: 'Saludos,'
-            },
-            'the 4XC team': {
-                en: 'the 4XC team',
-                pt: 'a equipe 4XC',
-                es: 'el equipo 4XC'
-            }
-        };
+          // Restore schedules
+          updateScheduleInputs();
 
-        // Initialize the application
-        $(document).ready(function() {
-            loadTemplate();
-            initializeSortable();
-            bindEvents();
-            updateAllTemplates();
-        });
-
-        // Load template from sessionStorage
-        function loadTemplate() {
-            const savedData = sessionStorage.getItem('4xcEmailTemplateData');
-            if (savedData) {
-                templateData = JSON.parse(savedData);
-                
-                // Update form fields
-                $('#var-firstname').val(templateData.variables.firstname);
-                $('#var-holiday').val(templateData.variables.holiday);
-                $('#var-date1').val(templateData.variables.date1);
-                $('#var-date2').val(templateData.variables.date2);
-                $('#var-servertime').val(templateData.variables.servertime);
-                $('#custom-greeting').val(templateData.customGreeting);
-                $('#additional-info').val(templateData.additionalInfo);
-                $('#subject-line').val(templateData.subjectLine);
-                
-                // Update toggle switches
-                Object.keys(templateData.blocks).forEach(block => {
-                    const toggle = $(`[data-target="${block}"]`);
-                    if (templateData.blocks[block]) {
-                        toggle.addClass('active');
-                    } else {
-                        toggle.removeClass('active');
-                    }
-                });
-                
-                // Restore schedules
-                updateScheduleInputs();
-                
-                // Restore block order
-                Object.keys(templateData.blockOrder).forEach(lang => {
-                    const container = $(`#sortable-${lang}`);
-                    templateData.blockOrder[lang].forEach(blockId => {
-                        const block = container.find(`[data-block="${blockId}"]`);
-                        container.append(block);
-                    });
-                });
-            }
+          // Restore block order
+          Object.keys(templateData.blockOrder).forEach((lang) => {
+            const container = $(`#sortable-${lang}`);
+            templateData.blockOrder[lang].forEach((blockId) => {
+              const block = container.find(`[data-block="${blockId}"]`);
+              container.append(block);
+            });
+          });
         }
+      }
 
-        // Save template to sessionStorage
-        function saveTemplate() {
-            // Update schedules from inputs
-            updateSchedulesFromInputs();
-            
-            sessionStorage.setItem('4xcEmailTemplateData', JSON.stringify(templateData));
-            
-            // Show success message
-            const successMsg = $('<div class="success-message">Template saved successfully!</div>');
-            $('.sidebar').prepend(successMsg);
-            setTimeout(() => successMsg.fadeOut(), 3000);
-        }
-
-        // Initialize sortable functionality
-        function initializeSortable() {
-            $('.sortable-container').sortable({
-                items: '.sortable-block',
-                handle: '.sortable-block',
-                cursor: 'move',
-                placeholder: 'sortable-placeholder',
-                tolerance: 'pointer',
-                update: function(event, ui) {
-                    const lang = $(this).attr('id').split('-')[1];
-                    const newOrder = [];
-                    $(this).children('.sortable-block').each(function() {
-                        newOrder.push($(this).attr('data-block'));
-                    });
-                    templateData.blockOrder[lang] = newOrder;
-                    saveTemplate();
-                }
-            });
-        }
-
-        // Bind events
-        function bindEvents() {
-            // Variable inputs
-            $('#var-firstname, #var-holiday, #var-date1, #var-date2, #var-servertime').on('input change', function() {
-                const varName = $(this).attr('id').replace('var-', '');
-                templateData.variables[varName] = $(this).val();
-                updateAllTemplates();
-            });
-
-            // Custom text inputs
-            $('#custom-greeting').on('input', function() {
-                templateData.customGreeting = $(this).val();
-                updateAllTemplates();
-            });
-
-            $('#additional-info').on('input', function() {
-                templateData.additionalInfo = $(this).val();
-                updateAllTemplates();
-            });
-
-            $('#subject-line').on('input', function() {
-                templateData.subjectLine = $(this).val();
-            });
-
-            // Toggle switches
-            $('.toggle-switch').on('click', function() {
-                const target = $(this).attr('data-target');
-                const isActive = $(this).hasClass('active');
-                
-                $(this).toggleClass('active');
-                templateData.blocks[target] = !isActive;
-                
-                // Update visibility in all languages
-                $(`[data-block="${target}"]`).toggle(!isActive);
-                
-                saveTemplate();
-            });
-
-            // Schedule inputs
-            $(document).on('input', '.schedule-item input', function() {
-                updateSchedulesFromInputs();
-                updateAllTemplates();
-            });
-        }
-
-        // Update schedule inputs from data
-        function updateScheduleInputs() {
-            // Thursday schedule
-            const thursdayContainer = $('#thursday-schedule');
-            thursdayContainer.empty();
-            templateData.schedules.thursday.forEach(item => {
-                const html = `
-                    <div class="schedule-item">
-                        <input type="text" placeholder="Instrument" class="instrument" value="${item.instrument}">
-                        <input type="text" placeholder="Time" class="time" value="${item.time}">
-                        <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
-                    </div>
-                `;
-                thursdayContainer.append(html);
-            });
-
-            // Friday schedule
-            const fridayContainer = $('#friday-schedule');
-            fridayContainer.empty();
-            templateData.schedules.friday.forEach(item => {
-                const html = `
-                    <div class="schedule-item">
-                        <input type="text" placeholder="Instrument" class="instrument" value="${item.instrument}">
-                        <input type="text" placeholder="Time" class="time" value="${item.time}">
-                        <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
-                    </div>
-                `;
-                fridayContainer.append(html);
-            });
-        }
-
+      // Save template to sessionStorage
+      function saveTemplate() {
         // Update schedules from inputs
-        function updateSchedulesFromInputs() {
-            // Thursday schedule
-            const thursdayItems = [];
-            $('#thursday-schedule .schedule-item').each(function() {
-                const instrument = $(this).find('.instrument').val();
-                const time = $(this).find('.time').val();
-                if (instrument || time) {
-                    thursdayItems.push({instrument, time});
-                }
-            });
-            templateData.schedules.thursday = thursdayItems;
+        updateSchedulesFromInputs();
 
-            // Friday schedule
-            const fridayItems = [];
-            $('#friday-schedule .schedule-item').each(function() {
-                const instrument = $(this).find('.instrument').val();
-                const time = $(this).find('.time').val();
-                if (instrument || time) {
-                    fridayItems.push({instrument, time});
-                }
-            });
-            templateData.schedules.friday = fridayItems;
-        }
+        sessionStorage.setItem(
+          "4xcEmailTemplateData",
+          JSON.stringify(templateData)
+        );
 
-        // Add schedule row
-        function addScheduleRow(day) {
-            const container = $(`#${day}-schedule`);
-            const html = `
-                <div class="schedule-item">
-                    <input type="text" placeholder="Instrument" class="instrument">
-                    <input type="text" placeholder="Time" class="time">
-                    <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
-                </div>
-            `;
-            container.append(html);
-        }
+        // Show success message
+        const successMsg = $(
+          '<div class="success-message">Template saved successfully!</div>'
+        );
+        $(".sidebar").prepend(successMsg);
+        setTimeout(() => successMsg.fadeOut(), 3000);
+      }
 
-        // Remove schedule row
-        function removeScheduleRow(button) {
-            $(button).closest('.schedule-item').remove();
-            updateSchedulesFromInputs();
-            updateAllTemplates();
-        }
-
-        // Switch language
-        function switchLanguage(lang) {
-            currentLanguage = lang;
-            
-            // Update active tab
-            $('.language-tab').removeClass('active');
-            $(`.language-tab`).filter(function() {
-                return $(this).text().toLowerCase() === lang;
-            }).addClass('active');
-            
-            // Update template content
-            $('.template-content').removeClass('active');
-            $(`#template-${lang}`).addClass('active');
-        }
-
-        // Update all templates with current data
-        function updateAllTemplates() {
-            ['en', 'pt', 'es'].forEach(lang => {
-                updateTemplate(lang);
-            });
-        }
-
-        // Update specific template
-        function updateTemplate(lang) {
-            const template = $(`#template-${lang}`);
-            
-            // Update variables
-            template.find('.variable-tag').each(function() {
-                const varName = $(this).text().replace(/[{}]/g, '');
-                if (templateData.variables[varName]) {
-                    $(this).text(`{{${varName}}}`);
-                }
-            });
-
-            // Update custom greeting
-            const customGreetingDisplay = template.find(`#custom-greeting-display${lang !== 'en' ? '-' + lang : ''}`);
-            if (templateData.customGreeting) {
-                customGreetingDisplay.html(`<p>${templateData.customGreeting}</p>`);
-            } else {
-                customGreetingDisplay.empty();
-            }
-
-            // Update additional info
-            const additionalInfoDisplay = template.find(`#additional-info-display${lang !== 'en' ? '-' + lang : ''}`);
-            if (templateData.additionalInfo) {
-                additionalInfoDisplay.html(`<p>${templateData.additionalInfo}</p>`);
-            } else {
-                additionalInfoDisplay.empty();
-            }
-
-            // Update trading schedules
-            updateScheduleDisplay(lang, 'thursday');
-            updateScheduleDisplay(lang, 'friday');
-            
-            // Update block visibility
-            Object.keys(templateData.blocks).forEach(block => {
-                const blockElement = template.find(`[data-block="${block}"]`);
-                if (templateData.blocks[block]) {
-                    blockElement.show();
-                } else {
-                    blockElement.hide();
-                }
-            });
-        }
-
-        // Update schedule display
-        function updateScheduleDisplay(lang, day) {
-            const container = $(`#${day}-schedule-display${lang !== 'en' ? '-' + lang : ''}`);
-            container.empty();
-            
-            templateData.schedules[day].forEach(item => {
-                if (item.instrument && item.time) {
-                    const html = `
-                        <div class="schedule-row">
-                            <div class="schedule-instrument"><strong>${item.instrument}</strong></div>
-                            <div class="schedule-time">${item.time}</div>
-                        </div>
-                    `;
-                    container.append(html);
-                }
-            });
-        }
-
-        // Export template as HTML
-        function exportTemplate() {
-            const lang = currentLanguage;
-            const template = $(`#template-${lang}`).clone();
-            
-            // Replace variables with actual values
-            template.find('.variable-tag').each(function() {
-                const varName = $(this).text().replace(/[{}]/g, '');
-                if (templateData.variables[varName]) {
-                    $(this).replaceWith(templateData.variables[varName]);
-                }
-            });
-            
-            // Remove sortable classes and data attributes
-            template.find('.sortable-block').removeClass('sortable-block ui-sortable-handle').removeAttr('data-block');
-            template.find('.sortable-container').removeClass('sortable-container');
-            
-            // Add proper email template structure
-            const htmlContent = `<!DOCTYPE html>
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="${lang}">
-<head>
-    <title>${templateData.subjectLine || '4XC Trading Update'}</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #ffffff;
-            font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
-        }
-        .email-template {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-        }
-        .email-header {
-            background: #ececec;
-            text-align: center;
-            padding: 30px;
-        }
-        .email-logo {
-            max-width: 100px;
-            height: auto;
-        }
-        .email-hero {
-            background: white;
-            text-align: center;
-            padding: 0;
-        }
-        .email-hero img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-        .email-body {
-            background: white;
-            padding: 60px 40px;
-        }
-        .email-body p {
-            color: #475467;
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 1.8;
-            margin-bottom: 16px;
-        }
-        .schedule-section {
-            background: #f9f9f9;
-            padding: 60px 40px 40px;
-            text-align: center;
-        }
-        .schedule-title {
-            color: #101112;
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 30px;
-        }
-        .schedule-table {
-            background: white;
-            border: 1px solid #d0d5dd;
-            border-radius: 10px;
-            margin: 20px auto;
-            overflow: hidden;
-            max-width: 500px;
-        }
-        .schedule-date {
-            background: #efefef;
-            padding: 15px;
-            font-weight: 700;
-            color: #000;
-            text-align: center;
-            border-bottom: 1px solid #d0d5dd;
-        }
-        .schedule-row {
-            display: flex;
-            padding: 10px 25px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .schedule-row:last-child {
-            border-bottom: none;
-        }
-        .schedule-row:nth-child(even) {
-            background: #ffffff;
-        }
-        .schedule-row:nth-child(odd) {
-            background: #f9f9f9;
-        }
-        .schedule-instrument {
-            flex: 1;
-            text-align: left;
-            font-weight: 500;
-            color: #475467;
-        }
-        .schedule-time {
-            flex: 1;
-            text-align: left;
-            color: #475467;
-        }
-        .email-footer {
-            background: white;
-            padding: 60px 40px;
-            text-align: left;
-        }
-        .email-footer p {
-            color: #475467;
-            font-size: 16px;
-            line-height: 1.8;
-        }
-        .company-footer {
-            background: #efefef;
-            border-top: 1px solid #d0d5dd;
-            padding: 60px 40px 20px;
-        }
-        .company-info {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .social-links {
-            display: flex;
-            gap: 4px;
-        }
-        .social-links img {
-            width: 32px;
-            height: 32px;
-        }
-        .disclaimer {
-            color: #475467;
-            font-size: 11px;
-            font-weight: 500;
-            line-height: 1.5;
-            text-align: justify;
-            margin-bottom: 24px;
-        }
-        @media (max-width: 600px) {
-            .email-body, .schedule-section, .email-footer, .company-footer {
-                padding: 40px 20px !important;
-            }
-            .company-info {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-    ${template.html()}
-</body>
-</html>`;
-            
-            // Create and download file
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `4xc-email-template-${lang}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // Reset template to default
-        function resetTemplate() {
-            if (confirm('Are you sure you want to reset the template to default settings? This will remove all your changes.')) {
-                sessionStorage.removeItem('4xcEmailTemplateData');
-                location.reload();
-            }
-        }
-
-        // Export all languages
-        function exportAllLanguages() {
-            ['en', 'pt', 'es'].forEach(lang => {
-                setTimeout(() => {
-                    const originalLang = currentLanguage;
-                    switchLanguage(lang);
-                    exportTemplate();
-                    switchLanguage(originalLang);
-                }, 100 * ['en', 'pt', 'es'].indexOf(lang));
-            });
-        }
-
-        // Auto-save functionality
-        setInterval(function() {
-            updateSchedulesFromInputs();
+      // Initialize sortable functionality for main sections
+      function initializeSortable() {
+        $(".sortable-container").sortable({
+          items: ".sortable-block",
+          handle: ".sortable-block",
+          cursor: "move",
+          placeholder: "sortable-placeholder",
+          tolerance: "pointer",
+          update: function (event, ui) {
+            const lang = $(this).attr("id").split("-")[1];
+            const newOrder = [];
+            $(this)
+              .children(".sortable-block")
+              .each(function () {
+                newOrder.push($(this).attr("data-block"));
+              });
+            templateData.blockOrder[lang] = newOrder;
             saveTemplate();
-        }, 30000); // Auto-save every 30 seconds
-
-        // Keyboard shortcuts
-        $(document).keydown(function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.keyCode) {
-                    case 83: // Ctrl+S - Save
-                        e.preventDefault();
-                        saveTemplate();
-                        break;
-                    case 69: // Ctrl+E - Export
-                        e.preventDefault();
-                        exportTemplate();
-                        break;
-                    case 82: // Ctrl+R - Reset (with confirmation)
-                        e.preventDefault();
-                        resetTemplate();
-                        break;
-                }
-            }
+          },
         });
+      }
 
-        // Format dates for display
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            }).replace(/\//g, '.');
-        }
-
-        // Initialize tooltips and help text
-        function initializeTooltips() {
-            $('[title]').tooltip();
-        }
-
-        // Initialize everything
-        initializeTooltips();
-        
-        // Format dates on input
-        $('#var-date1, #var-date2').on('change', function() {
-            const formattedDate = formatDate($(this).val());
-            templateData.variables[$(this).attr('id').replace('var-', '')] = formattedDate;
+      // Initialize sortable functionality for schedule items
+      function initializeScheduleSortable() {
+        $(".sortable-schedule-container").sortable({
+          items: ".schedule-row-sortable",
+          handle: ".drag-handle",
+          cursor: "move",
+          placeholder: "schedule-placeholder",
+          tolerance: "pointer",
+          update: function (event, ui) {
+            updateSchedulesFromInputs();
             updateAllTemplates();
+            saveTemplate();
+          },
         });
+      }
+
+      // Bind events
+      function bindEvents() {
+        // Variable inputs
+        $(
+          "#var-firstname, #var-holiday, #var-date1, #var-date2, #var-servertime"
+        ).on("input change", function () {
+          const varName = $(this).attr("id").replace("var-", "");
+          templateData.variables[varName] = $(this).val();
+          updateAllTemplates();
+        });
+
+        // Custom text inputs
+        $("#custom-greeting").on("input", function () {
+          templateData.customGreeting = $(this).val();
+          updateAllTemplates();
+        });
+
+        $("#additional-info").on("input", function () {
+          templateData.additionalInfo = $(this).val();
+          updateAllTemplates();
+        });
+
+        $("#subject-line").on("input", function () {
+          templateData.subjectLine = $(this).val();
+        });
+
+        // Toggle switches
+        $(".toggle-switch").on("click", function () {
+          const target = $(this).attr("data-target");
+          const isActive = $(this).hasClass("active");
+
+          $(this).toggleClass("active");
+          templateData.blocks[target] = !isActive;
+
+          // Update visibility in all languages
+          $(`[data-block="${target}"]`).toggle(!isActive);
+
+          saveTemplate();
+        });
+
+        // Schedule inputs
+        $(document).on(
+          "input change",
+          ".schedule-item input, .schedule-item select",
+          function () {
+            updateSchedulesFromInputs();
+            updateAllTemplates();
+          }
+        );
+      }
+
+      // Update schedule inputs from data
+      function updateScheduleInputs() {
+        const container = $("#schedule-sections-container");
+        container.empty();
+
+        templateData.scheduleSections.forEach((section) => {
+          const sectionHtml = `
+                          <div class="trading-schedule" data-day="${
+                            section.id
+                          }">
+                              <div class="schedule-header">
+                                  <h4>
+                                      <input type="text" class="schedule-day-input" value="${
+                                        section.name
+                                      }" onchange="updateScheduleSection(this, '${
+            section.id
+          }')">
+                                      Schedule
+                                  </h4>
+                                  <button class="remove-schedule-btn" onclick="removeScheduleSection(this)">×</button>
+                              </div>
+                              <div id="${
+                                section.id
+                              }-schedule" class="sortable-schedule-container">
+                                  ${section.items
+                                    .map(
+                                      (item) => `
+                                      <div class="schedule-item schedule-row-sortable">
+                                          <span class="drag-handle">⋮⋮</span>
+                                          <input type="text" placeholder="Instrument" class="instrument" value="${
+                                            item.instrument
+                                          }">
+                                          <select class="status">
+                                              <option value="early-close" ${
+                                                item.status === "early-close"
+                                                  ? "selected"
+                                                  : ""
+                                              }>Early Close</option>
+                                              <option value="late-start" ${
+                                                item.status === "late-start"
+                                                  ? "selected"
+                                                  : ""
+                                              }>Late Start</option>
+                                              <option value="closed" ${
+                                                item.status === "closed"
+                                                  ? "selected"
+                                                  : ""
+                                              }>Trading Closed</option>
+                                          </select>
+                                          <input type="time" class="time-input" value="${
+                                            item.time
+                                          }">
+                                          <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
+                                      </div>
+                                  `
+                                    )
+                                    .join("")}
+                              </div>
+                              <button class="add-row-btn" onclick="addScheduleRow('${
+                                section.id
+                              }')">+ Add Row</button>
+                          </div>
+                      `;
+          container.append(sectionHtml);
+        });
+
+        // Reinitialize sortable after updating HTML
+        initializeScheduleSortable();
+      }
+
+      // Update schedules from inputs
+      function updateSchedulesFromInputs() {
+        templateData.scheduleSections = [];
+
+        $(".trading-schedule").each(function () {
+          const sectionId = $(this).data("day");
+          const sectionName = $(this).find(".schedule-day-input").val();
+          const items = [];
+
+          $(this)
+            .find(".schedule-item")
+            .each(function () {
+              const instrument = $(this).find(".instrument").val();
+              const status = $(this).find(".status").val();
+              const time = $(this).find(".time-input").val();
+              if (instrument || status || time) {
+                items.push({ instrument, status, time });
+              }
+            });
+
+          templateData.scheduleSections.push({
+            id: sectionId,
+            name: sectionName,
+            items: items,
+          });
+        });
+      }
+
+      // Add schedule section
+      function addScheduleSection() {
+        const newId = "schedule-" + Date.now();
+        const newSection = {
+          id: newId,
+          name: "New Day",
+          items: [],
+        };
+
+        templateData.scheduleSections.push(newSection);
+        updateScheduleInputs();
+        updateAllTemplates();
+      }
+
+      // Remove schedule section
+      function removeScheduleSection(button) {
+        if (templateData.scheduleSections.length <= 1) {
+          alert("You must have at least one schedule section.");
+          return;
+        }
+
+        const sectionElement = $(button).closest(".trading-schedule");
+        const sectionId = sectionElement.data("day");
+
+        templateData.scheduleSections = templateData.scheduleSections.filter(
+          (section) => section.id !== sectionId
+        );
+        sectionElement.remove();
+        updateAllTemplates();
+      }
+
+      // Update schedule section name
+      function updateScheduleSection(input, sectionId) {
+        const newName = $(input).val();
+        const section = templateData.scheduleSections.find(
+          (s) => s.id === sectionId
+        );
+        if (section) {
+          section.name = newName;
+          updateAllTemplates();
+        }
+      }
+
+      // Add schedule row
+      function addScheduleRow(sectionId) {
+        const container = $(`#${sectionId}-schedule`);
+        const html = `
+                      <div class="schedule-item schedule-row-sortable">
+                          <span class="drag-handle">⋮⋮</span>
+                          <input type="text" placeholder="Instrument" class="instrument">
+                          <select class="status">
+                              <option value="early-close">Early Close</option>
+                              <option value="late-start">Late Start</option>
+                              <option value="closed">Trading Closed</option>
+                          </select>
+                          <input type="time" class="time-input">
+                          <button class="remove-row-btn" onclick="removeScheduleRow(this)">×</button>
+                      </div>
+                  `;
+        container.append(html);
+        initializeScheduleSortable();
+      }
+
+      // Remove schedule row
+      function removeScheduleRow(button) {
+        $(button).closest(".schedule-item").remove();
+        updateSchedulesFromInputs();
+        updateAllTemplates();
+      }
+
+      // Switch language
+      function switchLanguage(lang) {
+        currentLanguage = lang;
+
+        // Update active tab
+        $(".language-tab").removeClass("active");
+        $(`.language-tab`)
+          .filter(function () {
+            return $(this).text().toLowerCase() === lang;
+          })
+          .addClass("active");
+
+        // Update template content
+        $(".template-content").removeClass("active");
+        $(`#template-${lang}`).addClass("active");
+      }
+
+      // Update all templates with current data
+      function updateAllTemplates() {
+        ["en", "pt", "es"].forEach((lang) => {
+          updateTemplate(lang);
+        });
+      }
+
+      // Update specific template
+      function updateTemplate(lang) {
+        const template = $(`#template-${lang}`);
+
+        // Update variables
+        template.find(".variable-tag").each(function () {
+          const varName = $(this).text().replace(/[{}]/g, "");
+          if (templateData.variables[varName]) {
+            $(this).text(`{{${varName}}}`);
+          }
+        });
+
+        // Update custom greeting
+        const customGreetingDisplay = template.find(
+          `#custom-greeting-display${lang !== "en" ? "-" + lang : ""}`
+        );
+        if (templateData.customGreeting) {
+          customGreetingDisplay.html(`<p>${templateData.customGreeting}</p>`);
+        } else {
+          customGreetingDisplay.empty();
+        }
+
+        // Update additional info
+        const additionalInfoDisplay = template.find(
+          `#additional-info-display${lang !== "en" ? "-" + lang : ""}`
+        );
+        if (templateData.additionalInfo) {
+          additionalInfoDisplay.html(`<p>${templateData.additionalInfo}</p>`);
+        } else {
+          additionalInfoDisplay.empty();
+        }
+
+        // Update trading schedules
+        updateScheduleDisplay(lang);
+
+        // Update block visibility
+        Object.keys(templateData.blocks).forEach((block) => {
+          const blockElement = template.find(`[data-block="${block}"]`);
+          if (templateData.blocks[block]) {
+            blockElement.show();
+          } else {
+            blockElement.hide();
+          }
+        });
+      }
+
+      // Update schedule display
+      function updateScheduleDisplay(lang) {
+        const container = $(
+          `#schedule-tables-display${lang !== "en" ? "-" + lang : ""}`
+        );
+        container.empty();
+
+        templateData.scheduleSections.forEach((section) => {
+          if (section.items.length > 0) {
+            const dayName = translations.days[section.name]
+              ? translations.days[section.name][lang]
+              : section.name;
+
+            const tableHtml = `
+                              <div class="schedule-table">
+                                  <div class="schedule-date">${dayName} – <span class="variable-tag">{{date1}}</span></div>
+                                  <div class="schedule-rows">
+                                      ${section.items
+                                        .map((item) => {
+                                          if (item.instrument && item.status) {
+                                            const statusText =
+                                              translations.status[item.status][
+                                                lang
+                                              ];
+                                            const timeText =
+                                              item.status === "closed"
+                                                ? ""
+                                                : ` ${item.time}`;
+                                            return `
+                                                  <div class="schedule-row">
+                                                      <div class="schedule-instrument"><strong>${item.instrument}</strong></div>
+                                                      <div class="schedule-time">${statusText}${timeText}</div>
+                                                  </div>
+                                              `;
+                                          }
+                                          return "";
+                                        })
+                                        .join("")}
+                                  </div>
+                              </div>
+                          `;
+            container.append(tableHtml);
+          }
+        });
+      }
+
+      // Format date for display
+      function formatDateForDisplay(dateString) {
+        const date = new Date(dateString);
+        return date
+          .toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+          .replace(/\//g, ".");
+      }
+
+      // Export template as HTML with proper table structure
+      function exportTemplate() {
+        const lang = currentLanguage;
+        const template = $(`#template-${lang}`).clone();
+
+        // Replace variables with actual values
+        template.find(".variable-tag").each(function () {
+          const varName = $(this).text().replace(/[{}]/g, "");
+          if (templateData.variables[varName]) {
+            let value = templateData.variables[varName];
+
+            // Format dates for display
+            if (varName === "date1" || varName === "date2") {
+              value = formatDateForDisplay(value);
+            }
+
+            $(this).replaceWith(value);
+          }
+        });
+
+        // Convert schedule sections to proper HTML tables
+        template.find(".schedule-section").each(function () {
+          const scheduleSection = $(this);
+          const tablesContainer = scheduleSection.find(
+            '[id^="schedule-tables-display"]'
+          );
+
+          let tablesHtml = "";
+          templateData.scheduleSections.forEach((section) => {
+            if (section.items.length > 0) {
+              const dayName = translations.days[section.name]
+                ? translations.days[section.name][lang]
+                : section.name;
+
+              tablesHtml += `
+                                  <table class="schedule-table" style="background: white; border: 1px solid #d0d5dd; border-radius: 10px; margin: 20px auto; overflow: hidden; max-width: 500px; width: 100%; border-collapse: collapse;">
+                                      <tr>
+                                          <td colspan="2" style="background: #efefef; padding: 15px; font-weight: 700; color: #000; text-align: center; border-bottom: 1px solid #d0d5dd;">
+                                              ${dayName} – ${
+                templateData.variables.date1
+                  ? formatDateForDisplay(templateData.variables.date1)
+                  : "{{date1}}"
+              }
+                                          </td>
+                                      </tr>
+                                      ${section.items
+                                        .map((item, index) => {
+                                          if (item.instrument && item.status) {
+                                            const statusText =
+                                              translations.status[item.status][
+                                                lang
+                                              ];
+                                            const timeText =
+                                              item.status === "closed"
+                                                ? ""
+                                                : ` ${item.time}`;
+                                            const bgColor =
+                                              index % 2 === 0
+                                                ? "#f9f9f9"
+                                                : "#ffffff";
+                                            return `
+                                                  <tr style="background: ${bgColor};">
+                                                      <td style="padding: 10px 25px; font-weight: 500; color: #475467; border-bottom: 1px solid #f0f0f0; text-align: left;">
+                                                          <strong>${item.instrument}</strong>
+                                                      </td>
+                                                      <td style="padding: 10px 25px; color: #475467; border-bottom: 1px solid #f0f0f0; text-align: left;">
+                                                          ${statusText}${timeText}
+                                                      </td>
+                                                  </tr>
+                                              `;
+                                          }
+                                          return "";
+                                        })
+                                        .join("")}
+                                  </table>
+                              `;
+            }
+          });
+
+          tablesContainer.html(tablesHtml);
+        });
+
+        // Remove sortable classes and data attributes
+        template
+          .find(".sortable-block")
+          .removeClass("sortable-block ui-sortable-handle")
+          .removeAttr("data-block");
+        template
+          .find(".sortable-container")
+          .removeClass("sortable-container ui-sortable");
+
+        // Add proper email template structure
+        const htmlContent = `<!DOCTYPE html>
+      <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="${lang}">
+      <head>
+          <title>${templateData.subjectLine || "4XC Trading Update"}</title>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css">
+          <style>
+              body {
+                  margin: 0;
+                  padding: 0;
+                  background-color: #ffffff;
+                  font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
+              }
+              .email-template {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  background: white;
+              }
+              .email-header {
+                  background: #ececec;
+                  text-align: center;
+                  padding: 30px;
+              }
+              .email-logo {
+                  max-width: 100px;
+                  height: auto;
+              }
+              .email-hero {
+                  background: white;
+                  text-align: center;
+                  padding: 0;
+              }
+              .email-hero img {
+                  max-width: 100%;
+                  height: auto;
+                  display: block;
+              }
+              .email-body {
+                  background: white;
+                  padding: 60px 40px;
+              }
+              .email-body p {
+                  color: #475467;
+                  font-size: 16px;
+                  font-weight: 500;
+                  line-height: 1.8;
+                  margin-bottom: 16px;
+              }
+              .schedule-section {
+                  background: #f9f9f9;
+                  padding: 60px 40px 40px;
+                  text-align: center;
+              }
+              .schedule-title {
+                  color: #101112;
+                  font-size: 16px;
+                  font-weight: 700;
+                  margin-bottom: 30px;
+              }
+              .schedule-table {
+                  background: white;
+                  border: 1px solid #d0d5dd;
+                  border-radius: 10px;
+                  margin: 20px auto;
+                  overflow: hidden;
+                  max-width: 500px;
+                  width: 100%;
+                  border-collapse: collapse;
+              }
+              .schedule-table td {
+                  padding: 10px 25px;
+                  border-bottom: 1px solid #f0f0f0;
+                  font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
+                  font-size: 14px;
+                  line-height: 1.1;
+                  vertical-align: top;
+              }
+              .schedule-table td:last-child {
+                  border-bottom: none;
+              }
+              .email-footer {
+                  background: white;
+                  padding: 60px 40px;
+                  text-align: left;
+              }
+              .email-footer p {
+                  color: #475467;
+                  font-size: 16px;
+                  line-height: 1.8;
+              }
+              .company-footer {
+                  background: #efefef;
+                  border-top: 1px solid #d0d5dd;
+                  padding: 60px 40px 20px;
+              }
+              .company-info {
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 20px;
+              }
+              .social-links {
+                  display: flex;
+                  gap: 4px;
+              }
+              .social-links img {
+                  width: 32px;
+                  height: 32px;
+              }
+              .disclaimer {
+                  color: #475467;
+                  font-size: 11px;
+                  font-weight: 500;
+                  line-height: 1.5;
+                  text-align: justify;
+                  margin-bottom: 24px;
+              }
+              @media (max-width: 600px) {
+                  .email-body, .schedule-section, .email-footer, .company-footer {
+                      padding: 40px 20px !important;
+                  }
+                  .company-info {
+                      flex-direction: column;
+                      text-align: center;
+                      gap: 20px;
+                  }
+                  .schedule-table td {
+                      padding: 8px 15px !important;
+                  }
+              }
+          </style>
+      </head>
+      <body>
+          ${template.html()}
+      </body>
+      </html>`;
+
+        // Create and download file
+        const blob = new Blob([htmlContent], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `4xc-email-template-${lang}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // Reset template to default
+      function resetTemplate() {
+        if (
+          confirm(
+            "Are you sure you want to reset the template to default settings? This will remove all your changes."
+          )
+        ) {
+          sessionStorage.removeItem("4xcEmailTemplateData");
+          location.reload();
+        }
+      }
+
+      // Auto-save functionality
+      setInterval(function () {
+        updateSchedulesFromInputs();
+        saveTemplate();
+      }, 30000); // Auto-save every 30 seconds
+
+      // Keyboard shortcuts
+      $(document).keydown(function (e) {
+        if (e.ctrlKey || e.metaKey) {
+          switch (e.keyCode) {
+            case 83: // Ctrl+S - Save
+              e.preventDefault();
+              saveTemplate();
+              break;
+            case 69: // Ctrl+E - Export
+              e.preventDefault();
+              exportTemplate();
+              break;
+            case 82: // Ctrl+R - Reset (with confirmation)
+              e.preventDefault();
+              resetTemplate();
+              break;
+          }
+        }
+      });
     </script>
-</body>
-</html>">
-                                    <div class="company-info">
-                                        <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/qgf/1gy/is6/Logo.png" alt="4XC Logo" style="max-width: 85px;">
-                                        <div class="social-links">
-                                            <a href="https://www.instagram.com/4xcofficial/"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/instagram@2x.png" alt="Instagram"></a>
-                                            <a href="https://www.facebook.com/4xCofficial"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/facebook@2x.png" alt="Facebook"></a>
-                                            <a href="https://x.com/4xcofficial"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/twitter@2x.png" alt="X"></a>
-                                            <a href="https://www.youtube.com/@4xc374"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-circle-default-gray/youtube@2x.png" alt="YouTube"></a>
-                                        </div>
-                                    </div>
-                                    <div class="disclaimer">
-                                        <strong>High Risk Investment Notice:</strong> Trading Forex/CFDs on margin carries a high level of risk and may not be suitable for all investors as you could sustain losses in excess of deposits. The products are intended for retail, professional and eligible counterparty clients. For clients who maintain account(s) with 4XC, retail clients could sustain a total loss of deposited funds but are not subject to subsequent payment obligations beyond the deposited funds and professional clients could sustain losses in excess of deposits. Prior to trading any products offered by 4XC, any affiliates of aforementioned firms, or other firms within 4XC of companies [collectively the "4xCube Ltd"], carefully consider your financial situation and experience level. 4xCube Ltd may provide general commentary which is not intended as investment advice and must not be construed as such. Seek advice from a separate financial advisor. 4xCube Ltd assumes no liability for errors, inaccuracies or omissions; does not warrant the accuracy, completeness of information, text, graphics, links or other items contained within these materials. Read and understand the Terms and Conditions on 4xCube Ltd websites prior to taking further action. 4XC is a trademark of 4xCube Ltd, registered in the Cook Islands with number ICA 12767/2018 and licensed by the FSC (Financial Supervisory Commission) with Money-Changing License number MC03/2018 (License applies only to Forex Products).<br><br>4xCube Ltd is audited by McMillan Woods<br><br>4xCube Ltd does not offer its services to residents of certain jurisdictions such as USA, Iraq, Iran, Myanmar, North Korea and Ukraine.
-                                    </div>
-                                    <div style="color: #475467; font-size: 11px; margin-bottom: 10px;">
-                                        %SENDER-INFO-SINGLELINE%
-                                    </div>
-                                    <div style="color: #475467; font-size: 11px;">
-                                        © Copyright 2025. 4XC All Rights Reserved.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="template-content" id="template-pt">
-                    <div class="email-template">
-                        <div class="sortable-container" id="sortable-pt">
-                            <div class="sortable-block" data-block="header-section">
-                                <div class="email-header">
-                                    <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/6lf/aar/sd5/Logo%20White.png" alt="4XC Logo" class="email-logo">
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="hero-section">
-                                <div class="email-hero">
-                                    <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ib3x1ij3/jq9/vhs/8nt/us-en.png" alt="Holiday Banner" style="width: 100%;">
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="main-message">
-                                <div class="email-body">
-                                    <p>Bom dia <span class="variable-tag">{{firstname}}</span>,</p>
-                                    <p>Devido ao <strong><span class="variable-tag">{{holiday}}</span></strong>, os horários de negociação serão afetados em <strong><span class="variable-tag">{{date1}}</span></strong> e em <strong><span class="variable-tag">{{date2}}</span> (<span class="variable-tag">{{servertime}}</span>)</strong>.</p>
-                                    <div id="custom-greeting-display-pt"></div>
-                                    <div id="additional-info-display-pt"></div>
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="trading-schedule">
-                                <div class="schedule-section">
-                                    <div class="schedule-title">HORÁRIO AJUSTADO</div>
-                                    
-                                    <div class="schedule-table">
-                                        <div class="schedule-date">Quinta-feira – <span class="variable-tag">{{date1}}</span></div>
-                                        <div id="thursday-schedule-display-pt"></div>
-                                    </div>
-
-                                    <div class="schedule-table">
-                                        <div class="schedule-date">Sexta-feira – <span class="variable-tag">{{date2}}</span></div>
-                                        <div id="friday-schedule-display-pt"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="footer-message">
-                                <div class="email-footer">
-                                    <p>Atenciosamente,<br><strong>a equipe 4XC</strong></p>
-                                </div>
-                            </div>
-
-                            <div class="sortable-block" data-block="company-footer">
-                                <div class="company-footer
+  </body>
+</html>
