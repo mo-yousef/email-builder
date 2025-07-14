@@ -1293,7 +1293,7 @@
                       Forex/CFDs con margen conlleva un alto nivel de riesgo y
                       puede no ser adecuado para todos los inversores, ya que
                       podrías sufrir pérdidas superiores a los depósitos. Los
-                      productos están destinados a clientes minoristas,
+                      produtos estão destinados a clientes minoristas,
                       profesionales y contrapartes elegibles. Para clientes que
                       mantienen cuenta(s) con 4XC, los clientes minoristas
                       podrían sufrir una pérdida total de los fondos depositados
@@ -1316,11 +1316,11 @@
                       web de 4xCube Ltd antes de tomar medidas adicionales. 4XC
                       es una marca comercial de 4xCube Ltd, registrada en las
                       Islas Cook con número ICA 12767/2018 y licenciada por la
-                      FSC (Comisión de Supervisión Financiera) con licencia de
+                      FSC (Comissão de Supervisão Financeira) con licencia de
                       cambio de dinero número MC03/2018 (La licencia se aplica
                       solo a productos Forex).<br /><br />4xCube Ltd es auditada
                       por McMillan Woods<br /><br />4xCube Ltd no ofrece sus
-                      servicios a residentes de ciertas jurisdicciones como
+                      servicios a residentes de ciertas jurisdicções como
                       Estados Unidos, Irak, Irán, Myanmar, Corea del Norte y
                       Ucrania.
                     </div>
@@ -1926,642 +1926,76 @@
       }
 
       function exportTemplate() {
-    const lang = currentLanguage;
-    let mainMessage = templateData.mainMessage;
+        const lang = currentLanguage;
+        fetch(`templates/${lang}.html`)
+            .then(response => response.text())
+            .then(htmlContent => {
+                let mainMessage = templateData.mainMessage;
+                Object.keys(templateData.variables).forEach(variable => {
+                    const regex = new RegExp(`{{${variable}}}`, 'g');
+                    mainMessage = mainMessage.replace(regex, templateData.variables[variable]);
+                });
 
-    // Replace variables in main message
-    Object.keys(templateData.variables).forEach(variable => {
-        const regex = new RegExp(`{{${variable}}}`, 'g');
-        mainMessage = mainMessage.replace(regex, templateData.variables[variable]);
-    });
+                const scheduleTables = templateData.scheduleSections.map(section => {
+                    if (section.items.length === 0) return '';
+                    const scheduleRows = section.items.map(item => `
+                        <tr>
+                            <td width="50%" style="vertical-align: top; padding: 10px; word-break: break-word;"><strong>${item.instrument}</strong></td>
+                            <td width="50%" style="vertical-align: top; padding: 10px; word-break: break-word;">${translations.status[item.status][lang] || item.status} ${item.status !== 'closed' ? item.time : ''}</td>
+                        </tr>
+                    `).join('');
 
-    const scheduleTables = templateData.scheduleSections.map(section => {
-        if (section.items.length === 0) return '';
-        const scheduleRows = section.items.map(item => `
-            <tr>
-                <td width="50%" style="vertical-align: top; padding: 10px; word-break: break-word;"><strong>${item.instrument}</strong></td>
-                <td width="50%" style="vertical-align: top; padding: 10px; word-break: break-word;">${translations.status[item.status][lang]} ${item.status !== 'closed' ? item.time : ''}</td>
-            </tr>
-        `).join('');
-
-        return `
-            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f9f9f9; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
-                <tbody>
-                    <tr>
-                        <td class="column column-1" width="8.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: bottom; border-radius: 10px 10px 0px 0px;"></td>
-                        <td class="column column-2" width="83.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #efefef; border-left: 1px solid #d0d5dd; border-right: 1px solid #d0d5dd; border-top: 1px solid #d0d5dd; vertical-align: bottom; border-radius: 10px 10px 0px 0px;">
-                            <table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                    return `
+                        <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f9f9f9; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                            <tbody>
                                 <tr>
-                                    <td class="pad" style="padding-bottom:15px;padding-top:15px;">
-                                        <div style="color:#000;direction:ltr;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;font-weight:700;letter-spacing:0px;line-height:1.1;text-align:center;mso-line-height-alt:18px;">
-                                            <p style="margin: 0;">${section.name} – ${templateData.variables.date1}</p>
-                                        </div>
+                                    <td class="column column-1" width="8.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: bottom; border-radius: 10px 10px 0px 0px;"></td>
+                                    <td class="column column-2" width="83.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #efefef; border-left: 1px solid #d0d5dd; border-right: 1px solid #d0d5dd; border-top: 1px solid #d0d5dd; vertical-align: bottom; border-radius: 10px 10px 0px 0px;">
+                                        <table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                            <tr>
+                                                <td class="pad" style="padding-bottom:15px;padding-top:15px;">
+                                                    <div style="color:#000;direction:ltr;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;font-weight:700;letter-spacing:0px;line-height:1.1;text-align:center;mso-line-height-alt:18px;">
+                                                        <p style="margin: 0;">${section.name} – ${templateData.variables.date1}</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </td>
+                                    <td class="column column-3" width="8.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: bottom; border-radius: 10px 10px 0px 0px;"></td>
                                 </tr>
-                            </table>
-                        </td>
-                        <td class="column column-3" width="8.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: bottom; border-radius: 10px 10px 0px 0px;"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f9f9f9; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
-                <tbody>
-                    <tr>
-                        <td class="column column-1" width="8.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top;"></td>
-                        <td class="column column-2" width="83.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #ffffff; border-left: 1px solid #d0d5dd; border-right: 1px solid #d0d5dd; padding-left: 25px; vertical-align: top;">
-                            <table style="width:100%; border-collapse: collapse;">
-                                <tbody>
-                                    ${scheduleRows}
-                                </tbody>
-                            </table>
-                        </td>
-                        <td class="column column-3" width="8.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top;"></td>
-                    </tr>
-                </tbody>
-            </table>
-        `;
-    }).join('');
-
-    let htmlContent = '';
-
-    if (lang === 'en') {
-        htmlContent = `<!DOCTYPE html>
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
-<head>
-	<title></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"><!--[if mso]>
-<xml><w:WordDocument xmlns:w="urn:schemas-microsoft-com:office:word"><w:DontUseAdvancedTypographyReadingMail/></w:WordDocument>
-<o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml>
-<![endif]--><!--[if !mso]><!-->
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css"><!--<![endif]-->
-	<style>
-		* {
-			box-sizing: border-box;
-		}
-
-		body {
-			margin: 0;
-			padding: 0;
-		}
-
-		a[x-apple-data-detectors] {
-			color: inherit !important;
-			text-decoration: inherit !important;
-		}
-
-		#MessageViewBody a {
-			color: inherit;
-			text-decoration: none;
-		}
-
-		p {
-			line-height: inherit
-		}
-
-		.desktop_hide,
-		.desktop_hide table {
-			mso-hide: all;
-			display: none;
-			max-height: 0px;
-			overflow: hidden;
-		}
-
-		.image_block img+div {
-			display: none;
-		}
-
-		sup,
-		sub {
-			font-size: 75%;
-			line-height: 0;
-		}
-
-		@media (max-width:620px) {
-			.social_block.desktop_hide .social-table {
-				display: inline-block !important;
-			}
-
-			.mobile_hide {
-				display: none;
-			}
-
-			.row-content {
-				width: 100% !important;
-			}
-
-			.stack .column {
-				width: 100%;
-				display: block;
-			}
-
-			.mobile_hide {
-				min-height: 0;
-				max-height: 0;
-				max-width: 0;
-				overflow: hidden;
-				font-size: 0px;
-			}
-
-			.desktop_hide,
-			.desktop_hide table {
-				display: table !important;
-				max-height: none !important;
-			}
-
-			.row-10 .column-2,
-			.row-12 .column-2,
-			.row-13 .column-2,
-			.row-14 .column-2,
-			.row-15 .column-2,
-			.row-16 .column-2,
-			.row-17 .column-2,
-			.row-18 .column-2,
-			.row-19 .column-2,
-			.row-20 .column-2,
-			.row-21 .column-2,
-			.row-22 .column-2,
-			.row-23 .column-2,
-			.row-24 .column-2,
-			.row-25 .column-2,
-			.row-27 .column-1 .block-1.image_block td.pad,
-			.row-27 .column-2 .block-1.social_block td.pad,
-			.row-28 .column-1 .block-3.paragraph_block td.pad,
-			.row-4 .column-1,
-			.row-8 .column-2,
-			.row-9 .column-2 {
-				padding: 0 !important;
-			}
-
-			.row-27 .column-1 .block-1.image_block .alignment div {
-				margin: 0 auto 0 0 !important;
-			}
-
-			.row-11 .row-content,
-			.row-12 .row-content,
-			.row-13 .row-content,
-			.row-14 .row-content,
-			.row-15 .row-content,
-			.row-16 .row-content,
-			.row-17 .row-content,
-			.row-18 .row-content,
-			.row-19 .row-content,
-			.row-20 .row-content,
-			.row-21 .row-content,
-			.row-22 .row-content,
-			.row-23 .row-content,
-			.row-24 .row-content,
-			.row-7 .row-content,
-			.row-8 .row-content,
-			.row-9 .row-content {
-				padding: 0 20px !important;
-			}
-
-			.row-10 .row-content,
-			.row-25 .row-content {
-				padding: 0 20px 40px !important;
-			}
-
-			.row-26 .row-content,
-			.row-5 .column-1 {
-				padding: 40px 20px !important;
-			}
-
-			.row-2 .column-1 {
-				padding: 20px 0 20px 20px !important;
-			}
-
-			.row-27 .column-1,
-			.row-28 .column-1 {
-				padding: 20px !important;
-			}
-
-			.row-27 .column-2 {
-				padding: 20px 20px 20px 0 !important;
-			}
-		}
-	</style><!--[if mso ]><style>sup, sub { font-size: 100% !important; } sup { mso-text-raise:10% } sub { mso-text-raise:-10% }</style> <![endif]-->
-</head>
-<body class="body" style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-	<table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
-		<tbody>
-			<tr>
-				<td>
-					${mainMessage}
-                    ${scheduleTables}
-				</td>
-			</tr>
-		</tbody>
-	</table><!-- End -->
-</body>
-</html>`;
-    } else if (lang === 'pt') {
-        htmlContent = `<!DOCTYPE html>
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="pt">
-<head>
-	<title></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"><!--[if mso]>
-<xml><w:WordDocument xmlns:w="urn:schemas-microsoft-com:office:word"><w:DontUseAdvancedTypographyReadingMail/></w:WordDocument>
-<o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml>
-<![endif]--><!--[if !mso]><!-->
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css"><!--<![endif]-->
-	<style>
-		* {
-			box-sizing: border-box;
-		}
-
-		body {
-			margin: 0;
-			padding: 0;
-		}
-
-		a[x-apple-data-detectors] {
-			color: inherit !important;
-			text-decoration: inherit !important;
-		}
-
-		#MessageViewBody a {
-			color: inherit;
-			text-decoration: none;
-		}
-
-		p {
-			line-height: inherit
-		}
-
-		.desktop_hide,
-		.desktop_hide table {
-			mso-hide: all;
-			display: none;
-			max-height: 0px;
-			overflow: hidden;
-		}
-
-		.image_block img+div {
-			display: none;
-		}
-
-		sup,
-		sub {
-			font-size: 75%;
-			line-height: 0;
-		}
-
-		@media (max-width:620px) {
-			.social_block.desktop_hide .social-table {
-				display: inline-block !important;
-			}
-
-			.mobile_hide {
-				display: none;
-			}
-
-			.row-content {
-				width: 100% !important;
-			}
-
-			.stack .column {
-				width: 100%;
-				display: block;
-			}
-
-			.mobile_hide {
-				min-height: 0;
-				max-height: 0;
-				max-width: 0;
-				overflow: hidden;
-				font-size: 0px;
-			}
-
-			.desktop_hide,
-			.desktop_hide table {
-				display: table !important;
-				max-height: none !important;
-			}
-
-			.row-10 .column-2,
-			.row-12 .column-2,
-			.row-13 .column-2,
-			.row-14 .column-2,
-			.row-15 .column-2,
-			.row-16 .column-2,
-			.row-17 .column-2,
-			.row-18 .column-2,
-			.row-19 .column-2,
-			.row-20 .column-2,
-			.row-21 .column-2,
-			.row-22 .column-2,
-			.row-23 .column-2,
-			.row-24 .column-2,
-			.row-25 .column-2,
-			.row-27 .column-1 .block-1.image_block td.pad,
-			.row-27 .column-2 .block-1.social_block td.pad,
-			.row-28 .column-1 .block-2.paragraph_block td.pad,
-			.row-4 .column-1,
-			.row-8 .column-2,
-			.row-9 .column-2 {
-				padding: 0 !important;
-			}
-
-			.row-27 .column-1 .block-1.image_block .alignment div {
-				margin: 0 auto 0 0 !important;
-			}
-
-			.row-11 .row-content,
-			.row-12 .row-content,
-			.row-13 .row-content,
-			.row-14 .row-content,
-			.row-15 .row-content,
-			.row-16 .row-content,
-			.row-17 .row-content,
-			.row-18 .row-content,
-			.row-19 .row-content,
-			.row-20 .row-content,
-			.row-21 .row-content,
-			.row-22 .row-content,
-			.row-23 .row-content,
-			.row-24 .row-content,
-			.row-7 .row-content,
-			.row-8 .row-content,
-			.row-9 .row-content {
-				padding: 0 20px !important;
-			}
-
-			.row-10 .row-content,
-			.row-25 .row-content {
-				padding: 0 20px 40px !important;
-			}
-
-			.row-26 .row-content,
-			.row-5 .column-1 {
-				padding: 40px 20px !important;
-			}
-
-			.row-2 .column-1 {
-				padding: 20px 0 20px 20px !important;
-			}
-
-			.row-27 .column-1,
-			.row-28 .column-1 {
-				padding: 20px !important;
-			}
-
-			.row-27 .column-2 {
-				padding: 20px 20px 20px 0 !important;
-			}
-		}
-	</style><!--[if mso ]><style>sup, sub { font-size: 100% !important; } sup { mso-text-raise:10% } sub { mso-text-raise:-10% }</style> <![endif]-->
-</head>
-<body class="body" style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-	<table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
-		<tbody>
-			<tr>
-				<td>
-                    <table class="row row-5" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ececec;">
-						<tbody>
-							<tr>
-								<td>
-									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
-										<tbody>
-											<tr>
-												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 60px; padding-left: 40px; padding-right: 40px; padding-top: 60px; vertical-align: top;">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad">
-																<div style="color:#475467;direction:ltr;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;font-weight:500;letter-spacing:0px;line-height:1.8;text-align:left;mso-line-height-alt:29px;">
-																	<p style="margin: 0; margin-bottom: 16px;"><span style="word-break: break-word; color: #475467;">Bom dia ${templateData.variables.firstname},</span></p>
-																	<p style="margin: 0;">Devido ao <strong>Dia da Independência dos EUA</strong>, os horários de negociação serão afetados nos dias <strong>${templateData.variables.date1}</strong> e <strong>${templateData.variables.date2} (horário do servidor MT4/MT5)</strong>.</p>
-                                                                    ${mainMessage}
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-                    ${scheduleTables}
-				</td>
-			</tr>
-		</tbody>
-	</table><!-- End -->
-</body>
-</html>`;
-    } else if (lang === 'es') {
-        htmlContent = `<!DOCTYPE html>
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="es">
-<head>
-	<title></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"><!--[if mso]>
-<xml><w:WordDocument xmlns:w="urn:schemas-microsoft-com:office:word"><w:DontUseAdvancedTypographyReadingMail/></w:WordDocument>
-<o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml>
-<![endif]--><!--[if !mso]><!-->
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css"><!--<![endif]-->
-	<style>
-		* {
-			box-sizing: border-box;
-		}
-
-		body {
-			margin: 0;
-			padding: 0;
-		}
-
-		a[x-apple-data-detectors] {
-			color: inherit !important;
-			text-decoration: inherit !important;
-		}
-
-		#MessageViewBody a {
-			color: inherit;
-			text-decoration: none;
-		}
-
-		p {
-			line-height: inherit
-		}
-
-		.desktop_hide,
-		.desktop_hide table {
-			mso-hide: all;
-			display: none;
-			max-height: 0px;
-			overflow: hidden;
-		}
-
-		.image_block img+div {
-			display: none;
-		}
-
-		sup,
-		sub {
-			font-size: 75%;
-			line-height: 0;
-		}
-
-		@media (max-width:620px) {
-			.social_block.desktop_hide .social-table {
-				display: inline-block !important;
-			}
-
-			.mobile_hide {
-				display: none;
-			}
-
-			.row-content {
-				width: 100% !important;
-			}
-
-			.stack .column {
-				width: 100%;
-				display: block;
-			}
-
-			.mobile_hide {
-				min-height: 0;
-				max-height: 0;
-				max-width: 0;
-				overflow: hidden;
-				font-size: 0px;
-			}
-
-			.desktop_hide,
-			.desktop_hide table {
-				display: table !important;
-				max-height: none !important;
-			}
-
-			.row-10 .column-2,
-			.row-12 .column-2,
-			.row-13 .column-2,
-			.row-14 .column-2,
-			.row-15 .column-2,
-			.row-16 .column-2,
-			.row-17 .column-2,
-			.row-18 .column-2,
-			.row-19 .column-2,
-			.row-20 .column-2,
-			.row-21 .column-2,
-			.row-22 .column-2,
-			.row-23 .column-2,
-			.row-24 .column-2,
-			.row-25 .column-2,
-			.row-27 .column-1 .block-1.image_block td.pad,
-			.row-27 .column-2 .block-1.social_block td.pad,
-			.row-28 .column-1 .block-3.paragraph_block td.pad,
-			.row-4 .column-1,
-			.row-8 .column-2,
-			.row-9 .column-2 {
-				padding: 0 !important;
-			}
-
-			.row-27 .column-1 .block-1.image_block .alignment div {
-				margin: 0 auto 0 0 !important;
-			}
-
-			.row-11 .row-content,
-			.row-12 .row-content,
-			.row-13 .row-content,
-			.row-14 .row-content,
-			.row-15 .row-content,
-			.row-16 .row-content,
-			.row-17 .row-content,
-			.row-18 .row-content,
-			.row-19 .row-content,
-			.row-20 .row-content,
-			.row-21 .row-content,
-			.row-22 .row-content,
-			.row-23 .row-content,
-			.row-24 .row-content,
-			.row-7 .row-content,
-			.row-8 .row-content,
-			.row-9 .row-content {
-				padding: 0 20px !important;
-			}
-
-			.row-10 .row-content,
-			.row-25 .row-content {
-				padding: 0 20px 40px !important;
-			}
-
-			.row-26 .row-content,
-			.row-5 .column-1 {
-				padding: 40px 20px !important;
-			}
-
-			.row-2 .column-1 {
-				padding: 20px 0 20px 20px !important;
-			}
-
-			.row-27 .column-1,
-			.row-28 .column-1 {
-				padding: 20px !important;
-			}
-
-			.row-27 .column-2 {
-				padding: 20px 20px 20px 0 !important;
-			}
-		}
-	</style><!--[if mso ]><style>sup, sub { font-size: 100% !important; } sup { mso-text-raise:10% } sub { mso-text-raise:-10% }</style> <![endif]-->
-</head>
-<body class="body" style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-	<table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
-		<tbody>
-			<tr>
-				<td>
-                    <table class="row row-5" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ececec;">
-						<tbody>
-							<tr>
-								<td>
-									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
-										<tbody>
-											<tr>
-												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 60px; padding-left: 40px; padding-right: 40px; padding-top: 60px; vertical-align: top;">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad">
-																<div style="color:#475467;direction:ltr;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;font-weight:500;letter-spacing:0px;line-height:1.8;text-align:left;mso-line-height-alt:29px;">
-																	<p style="margin: 0; margin-bottom: 16px;"><span style="word-break: break-word; color: #475467;">Buen día ${templateData.variables.firstname},</span></p>
-																	<p style="margin: 0;">Debido al <strong>Día de la Independencia de EE. UU.</strong>, los horarios de negociación se verán afectados los días <strong>${templateData.variables.date1}</strong> y <strong>${templateData.variables.date2} (hora del servidor MT4/MT5)</strong>.</p>
-                                                                    ${mainMessage}
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-                    ${scheduleTables}
-				</td>
-			</tr>
-		</tbody>
-	</table><!-- End -->
-</body>
-</html>`;
-    }
-
-    // Create and download file
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `4xc-email-template-${lang}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
+                            </tbody>
+                        </table>
+                        <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f9f9f9; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                            <tbody>
+                                <tr>
+                                    <td class="column column-1" width="8.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top;"></td>
+                                    <td class="column column-2" width="83.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #ffffff; border-left: 1px solid #d0d5dd; border-right: 1px solid #d0d5dd; padding-left: 25px; vertical-align: top;">
+                                        <table style="width:100%; border-collapse: collapse;">
+                                            <tbody>
+                                                ${scheduleRows}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td class="column column-3" width="8.33%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+                }).join('');
+
+                const finalHtml = htmlContent.replace('${mainMessage}', mainMessage).replace('${scheduleTables}', scheduleTables);
+
+                const blob = new Blob([finalHtml], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `4xc-email-template-${lang}.html`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+      }
 
       // Reset template to default
       function resetTemplate() {
